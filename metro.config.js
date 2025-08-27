@@ -1,4 +1,5 @@
 const { getDefaultConfig } = require("expo/metro-config");
+const { withNativeWind } = require("nativewind/metro");
 
 let config = getDefaultConfig(__dirname, {
   // [Web-only]: Enables CSS support in Metro.
@@ -14,4 +15,4 @@ config.resolver.resolveRequest = (context, moduleName, platform) => {
   return context.resolveRequest(context, moduleName, platform);
 };
 
-module.exports = config;
+module.exports = withNativeWind(config, { input: "./styles/global.css" });

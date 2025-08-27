@@ -1,3 +1,5 @@
+import "@/styles/global.css";
+
 import { Hooks } from "porto/wagmi";
 import { useEffect } from "react";
 import { Button, Text, View } from "react-native";
@@ -23,7 +25,10 @@ export default function Index() {
       }}
     >
       <View style={{ marginBottom: 30 }}>
-        <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 10 }}>
+        <Text
+          style={{ fontSize: 18, fontWeight: "bold", marginBottom: 10 }}
+          className="text-[#6e0f0ffa]"
+        >
           Wallet Status
         </Text>
         <Text>Status: {status}</Text>
