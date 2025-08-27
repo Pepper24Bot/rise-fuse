@@ -1,3 +1,4 @@
+import "@/styles/global.css";
 import "@/utilities/polyfills";
 
 import { wagmiConfig } from "@/config/wagmi";

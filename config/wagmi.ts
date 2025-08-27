@@ -2,13 +2,13 @@ import { asyncStorage } from "@/utilities/storage";
 import { Mode } from "porto";
 import { porto } from "porto/wagmi";
 import * as passkeys from "react-native-passkeys";
-import { riseTestnetConfig } from "rise-wallet";
+import { riseTestnet, riseTestnetConfig } from "rise-wallet";
 import { ByteArray, bytesToHex } from "viem";
 import { baseSepolia } from "viem/chains";
 import { createConfig, http } from "wagmi";
 
 export const wagmiConfig = createConfig({
-  chains: [baseSepolia],
+  chains: [riseTestnet],
   transports: {
     [baseSepolia.id]: http(),
   },
