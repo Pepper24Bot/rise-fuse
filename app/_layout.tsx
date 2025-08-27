@@ -12,7 +12,7 @@ export default function RootLayout() {
   return (
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={client}>
-        <Stack />
+        <Stack screenOptions={{ headerShown: false }} />
       </QueryClientProvider>
     </WagmiProvider>
   );

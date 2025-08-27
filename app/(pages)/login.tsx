@@ -1,63 +1,88 @@
-import "@/styles/global.css";
-import "@/utilities/polyfills";
-
+import Separator from "@/components/Separator";
+import { Link, useRouter } from "expo-router";
 import { Hooks } from "porto/wagmi";
 import { useEffect } from "react";
-import { Button, Text, View } from "react-native";
+import { Image, Pressable, Text, View } from "react-native";
 import { useAccount, useConnectors } from "wagmi";
 
-export default function Index() {
+export default function Login() {
+  const router = useRouter();
+
   const { mutate: connect, error: connectError } = Hooks.useConnect();
   const { mutate: disconnect } = Hooks.useDisconnect();
   const { address, isConnected, status } = useAccount();
   const connectors = useConnectors();
 
+  const onConnect = () => {
+    connect({ connector: connectors[0] });
+  };
+
   useEffect(() => {
-    if (connectError) console.error(connectError);
-  }, [connectError]);
+    // fix this
+    if (isConnected) {
+      router.navigate("/");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isConnected]);
 
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        padding: 20,
-      }}
-    >
-      <View style={{ marginBottom: 30 }}>
-        <Text
-          style={{ fontSize: 18, fontWeight: "bold", marginBottom: 10 }}
-          className="text-[#6e0f0ffa]"
-        >
-          Wallet Status
-        </Text>
-        <Text>Status: {status}</Text>
-        <Text>Connected: {isConnected ? "Yes" : "No"}</Text>
-        {address && <Text>Address: {address}</Text>}
-      </View>
-
-      <View style={{ gap: 10 }}>
-        <Button
-          title="Login"
-          onPress={() => {
-            connect({ connector: connectors[0], createAccount: false });
-          }}
-        />
-        <Button
-          title="Register"
-          onPress={() => {
-            connect({ connector: connectors[0], createAccount: true });
-          }}
-        />
-        {isConnected && (
-          <Button
-            title="Disconnect"
-            onPress={() => {
-              disconnect({ connector: connectors[0] });
-            }}
+    <View className="flex-1 flex-col items-center justify-center p-12">
+      <View className="flex-1 w-full items-center justify-center">
+        <View className="items-center gap-2">
+          <Image
+            source={require("../../assets/logo/rise-logo.png")}
+            className="w-[80px] max-h-[100px]"
           />
-        )}
+          <Text className="">
+            Welcome to <Text className="font-bold">FUSE</Text>
+          </Text>
+        </View>
+        <View className="flex-row items-center gap-2 py-8">
+          <Pressable
+            className="bg-gray-200 p-3 rounded-lg opacity-25"
+            disabled
+            onPress={() => {
+              console.log("[LOG]: Google Login");
+            }}
+          >
+            <Image
+              source={require("../../assets/logo/social/google.png")}
+              className="w-8 h-8"
+            />
+          </Pressable>
+          <Pressable
+            className="bg-gray-200 p-3 rounded-lg opacity-25"
+            disabled
+            onPress={() => {
+              console.log("[LOG]: X Login");
+            }}
+          >
+            <Image
+              source={require("../../assets/logo/social/twitterX.png")}
+              className="w-8 h-8"
+            />
+          </Pressable>
+        </View>
+        <Separator content="OR" />
+        <View className="items-center w-full py-8">
+          <Pressable
+            className="bg-gray-200 p-3 rounded-lg  w-full items-center"
+            onPress={onConnect}
+          >
+            <Text>Passkey</Text>
+          </Pressable>
+        </View>
+      </View>
+      <View className="flex-row gap-4 justify-end items-end flex-1 py-4">
+        <Link href="/" target="_blank" asChild className="underline">
+          <Text className="">Telegram</Text>
+        </Link>
+        <Link href="/" target="_blank" asChild className="underline">
+          <Text className="">Discord</Text>
+        </Link>
+        <Link href="/" target="_blank" asChild className="underline">
+          <Text className="">X</Text>
+        </Link>
       </View>
     </View>
   );
