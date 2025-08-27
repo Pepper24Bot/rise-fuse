@@ -1,0 +1,230 @@
+diff --git a/node_modules/ox/.bun-tag-16afe88b3d0f2431 b/.bun-tag-16afe88b3d0f2431
+new file mode 100644
+index 0000000000000000000000000000000000000000..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391
+diff --git a/node_modules/ox/.bun-tag-1fbc271c3f0794a1 b/.bun-tag-1fbc271c3f0794a1
+new file mode 100644
+index 0000000000000000000000000000000000000000..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391
+diff --git a/node_modules/ox/.bun-tag-3c57c70821ac32de b/.bun-tag-3c57c70821ac32de
+new file mode 100644
+index 0000000000000000000000000000000000000000..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391
+diff --git a/node_modules/ox/.bun-tag-4b63c592b2b5e69f b/.bun-tag-4b63c592b2b5e69f
+new file mode 100644
+index 0000000000000000000000000000000000000000..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391
+diff --git a/node_modules/ox/.bun-tag-4e997ceb1753bc08 b/.bun-tag-4e997ceb1753bc08
+new file mode 100644
+index 0000000000000000000000000000000000000000..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391
+diff --git a/node_modules/ox/.bun-tag-666aa2a175c20864 b/.bun-tag-666aa2a175c20864
+new file mode 100644
+index 0000000000000000000000000000000000000000..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391
+diff --git a/node_modules/ox/.bun-tag-8d6b9c5c4680d17d b/.bun-tag-8d6b9c5c4680d17d
+new file mode 100644
+index 0000000000000000000000000000000000000000..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391
+diff --git a/node_modules/ox/.bun-tag-ae75f90ae533a937 b/.bun-tag-ae75f90ae533a937
+new file mode 100644
+index 0000000000000000000000000000000000000000..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391
+diff --git a/node_modules/ox/.bun-tag-b36c709e2e85326d b/.bun-tag-b36c709e2e85326d
+new file mode 100644
+index 0000000000000000000000000000000000000000..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391
+diff --git a/node_modules/ox/.bun-tag-dc7b88477eae76f3 b/.bun-tag-dc7b88477eae76f3
+new file mode 100644
+index 0000000000000000000000000000000000000000..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391
+diff --git a/node_modules/ox/.bun-tag-dde2a35ec9e12349 b/.bun-tag-dde2a35ec9e12349
+new file mode 100644
+index 0000000000000000000000000000000000000000..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391
+diff --git a/node_modules/ox/.bun-tag-f3bb7b2790ab4206 b/.bun-tag-f3bb7b2790ab4206
+new file mode 100644
+index 0000000000000000000000000000000000000000..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391
+diff --git a/_cjs/core/WebAuthnP256.js b/_cjs/core/WebAuthnP256.js
+index 0daddc54923d0b11b6800650d803073febf5350e..3865fb322ae937432fa3bd0efdacc9f8c31125aa 100644
+--- a/_cjs/core/WebAuthnP256.js
++++ b/_cjs/core/WebAuthnP256.js
+@@ -35,9 +35,12 @@ async function createCredential(options) {
+         };
+     }
+     catch (error) {
++        // throw new CredentialCreationFailedError({
++        //     cause: error,
++        // });
+         throw new CredentialCreationFailedError({
+-            cause: error,
+-        });
++            cause: {...error, message: "[DEBUG]:parseCredentialPublicKey" + error.message}
++        })
+     }
+ }
+ function getAuthenticatorData(options = {}) {
+diff --git a/_cjs/core/internal/webauthn.js b/_cjs/core/internal/webauthn.js
+index 242460ecbcc876b35a1f63b579755999d8bde51e..bafa3aa93778d0ea582ef3afc5169092ccd2b420 100644
+--- a/_cjs/core/internal/webauthn.js
++++ b/_cjs/core/internal/webauthn.js
+@@ -10,6 +10,11 @@ function parseAsn1Signature(bytes) {
+     const r_start = bytes[4] === 0 ? 5 : 4;
+     const r_end = r_start + 32;
+     const s_start = bytes[r_end + 2] === 0 ? r_end + 3 : r_end + 2;
++    const toHexR = Hex.fromBytes(bytes.slice(r_start, r_end))
++    const toHexS = Hex.fromBytes(bytes.slice(s_start))
++    console.log("[DEBUG]: toHexR:: ", toHexR)
++    console.log("[DEBUG]: toHexS:: ", toHexS)
++    
+     const r = BigInt(Hex.fromBytes(bytes.slice(r_start, r_end)));
+     const s = BigInt(Hex.fromBytes(bytes.slice(s_start)));
+     return {
+@@ -32,17 +37,25 @@ async function parseCredentialPublicKey(response) {
+         return PublicKey.from(publicKey);
+     }
+     catch (error) {
+-        if (error.message !== 'Permission denied to access object')
+-            throw error;
++        // if (error.message !== 'Permission denied to access object')
++        //     throw error;
+         const data = new Uint8Array(response.attestationObject);
+         const coordinateLength = 0x20;
+         const cborPrefix = 0x58;
+         const findStart = (key) => {
+             const coordinate = new Uint8Array([key, cborPrefix, coordinateLength]);
+-            for (let i = 0; i < data.length - coordinate.length; i++)
+-                if (coordinate.every((byte, j) => data[i + j] === byte))
++            let temp = 0
++
++            for (let i = 0; i < data.length - coordinate.length; i++){
++                 if (coordinate.every((byte, j) => data[i + j] === byte)){
++                    temp = i + coordinate.length
+                     return i + coordinate.length;
+-            throw new WebAuthnP256_js_1.CredentialCreationFailedError();
++                 }
++            }
++               
++            // throw new WebAuthnP256_js_1.CredentialCreationFailedError();
++            console.log("[DEBUG] Inside findStart", { temp });
++            return temp
+         };
+         const xStart = findStart(0x21);
+         const yStart = findStart(0x22);
+diff --git a/_esm/core/WebAuthnP256.js b/_esm/core/WebAuthnP256.js
+index 4d7307a1b0c3b30b7039557ea21729fdbd8d2aa9..7e3c9e6b0fa36edf1c70bc38820c76b65208794e 100644
+--- a/_esm/core/WebAuthnP256.js
++++ b/_esm/core/WebAuthnP256.js
+@@ -47,9 +47,12 @@ export async function createCredential(options) {
+         };
+     }
+     catch (error) {
++        // throw new CredentialCreationFailedError({
++        //     cause: error,
++        // });
+         throw new CredentialCreationFailedError({
+-            cause: error,
+-        });
++            cause: {...error, message: "[DEBUG]:parseCredentialPublicKey" + error.message}
++        })
+     }
+ }
+ /**
+diff --git a/_esm/core/internal/webauthn.js b/_esm/core/internal/webauthn.js
+index 5620414096df11145e4c92d0fd2616690c1b1580..5b26a814df3ba13acc253c105541fad6b6f14ec6 100644
+--- a/_esm/core/internal/webauthn.js
++++ b/_esm/core/internal/webauthn.js
+@@ -11,6 +11,12 @@ export function parseAsn1Signature(bytes) {
+     const r_start = bytes[4] === 0 ? 5 : 4;
+     const r_end = r_start + 32;
+     const s_start = bytes[r_end + 2] === 0 ? r_end + 3 : r_end + 2;
++
++    const toHexR = Hex.fromBytes(bytes.slice(r_start, r_end))
++    const toHexS = Hex.fromBytes(bytes.slice(s_start))
++    console.log("[DEBUG]: toHexR:: ", toHexR)
++    console.log("[DEBUG]: toHexS:: ", toHexS)
++
+     const r = BigInt(Hex.fromBytes(bytes.slice(r_start, r_end)));
+     const s = BigInt(Hex.fromBytes(bytes.slice(s_start)));
+     return {
+@@ -43,17 +49,20 @@ export async function parseCredentialPublicKey(response) {
+         // Fallback for 1Password Firefox Add-on restricts access to certain credential properties
+         // so we need to use `attestationObject` to extract the public key.
+         // https://github.com/passwordless-id/webauthn/issues/50#issuecomment-2072902094
+-        if (error.message !== 'Permission denied to access object')
+-            throw error;
++        // if (error.message !== 'Permission denied to access object')
++        //     throw error;
+         const data = new Uint8Array(response.attestationObject);
+         const coordinateLength = 0x20;
+         const cborPrefix = 0x58;
+         const findStart = (key) => {
+             const coordinate = new Uint8Array([key, cborPrefix, coordinateLength]);
++            let temp = 0
+             for (let i = 0; i < data.length - coordinate.length; i++)
+                 if (coordinate.every((byte, j) => data[i + j] === byte))
+                     return i + coordinate.length;
+-            throw new CredentialCreationFailedError();
++            console.log("[DEBUG] Inside findStart", { temp });
++            return temp
++            // throw new CredentialCreationFailedError();
+         };
+         const xStart = findStart(0x21);
+         const yStart = findStart(0x22);
+diff --git a/core/WebAuthnP256.ts b/core/WebAuthnP256.ts
+index 6b439e3bddf856422e22cff901fa51122894a678..65ac846c6bca5cb6bbea468a2cdc2b89929ac81c 100644
+--- a/core/WebAuthnP256.ts
++++ b/core/WebAuthnP256.ts
+@@ -78,7 +78,7 @@ export async function createCredential(
+     }
+   } catch (error) {
+     throw new CredentialCreationFailedError({
+-      cause: error as Error,
++      cause: {...error, message: "[DEBUG]:parseCredentialPublicKey" + error.message} as Error,  
+     })
+   }
+ }
+diff --git a/core/internal/webauthn.ts b/core/internal/webauthn.ts
+index 73471400a6d2c397272c30fb6f956dd5f11382cf..7c52961f49ea6b97fe9a5763e06f074c7d0699c5 100644
+--- a/core/internal/webauthn.ts
++++ b/core/internal/webauthn.ts
+@@ -163,6 +163,11 @@ export function parseAsn1Signature(bytes: Uint8Array) {
+   const r_end = r_start + 32
+   const s_start = bytes[r_end + 2] === 0 ? r_end + 3 : r_end + 2
+ 
++  const toHexR = Hex.fromBytes(bytes.slice(r_start, r_end))
++  const toHexS = Hex.fromBytes(bytes.slice(s_start))
++  console.log("[DEBUG]: toHexR:: ", toHexR)
++  console.log("[DEBUG]: toHexS:: ", toHexS)
++
+   const r = BigInt(Hex.fromBytes(bytes.slice(r_start, r_end)))
+   const s = BigInt(Hex.fromBytes(bytes.slice(s_start)))
+ 
+@@ -206,8 +211,8 @@ export async function parseCredentialPublicKey(
+     // Fallback for 1Password Firefox Add-on restricts access to certain credential properties
+     // so we need to use `attestationObject` to extract the public key.
+     // https://github.com/passwordless-id/webauthn/issues/50#issuecomment-2072902094
+-    if ((error as Error).message !== 'Permission denied to access object')
+-      throw error
++    // if ((error as Error).message !== 'Permission denied to access object')
++    //   throw error
+ 
+     const data = new Uint8Array(response.attestationObject)
+     const coordinateLength = 0x20
+@@ -215,14 +220,23 @@ export async function parseCredentialPublicKey(
+ 
+     const findStart = (key: number) => {
+       const coordinate = new Uint8Array([key, cborPrefix, coordinateLength])
+-      for (let i = 0; i < data.length - coordinate.length; i++)
+-        if (coordinate.every((byte, j) => data[i + j] === byte))
+-          return i + coordinate.length
+-      throw new CredentialCreationFailedError()
++      let temp = 0
++      console.log("[DEBUG] coordinate", coordinate);
++      for (let i = 0; i < data.length - coordinate.length; i++){
++          if (coordinate.every((byte, j) => data[i + j] === byte)){
++             temp = i + coordinate.length
++             return i + coordinate.length
++          }
++      }
++      
++      console.log("[DEBUG] Inside findStart", { temp });
++      return temp
++      // throw new CredentialCreationFailedError() 
+     }
+ 
+     const xStart = findStart(0x21)
+     const yStart = findStart(0x22)
++    console.log("[DEBUG] Inside catch parseCredentialPublicKey", { xStart, yStart });
+ 
+     return PublicKey.from(
+       new Uint8Array([
