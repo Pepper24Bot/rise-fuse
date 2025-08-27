@@ -1,8 +1,30 @@
 import Separator from "@/components/Separator";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
+import { Hooks } from "porto/wagmi";
+import { useEffect } from "react";
 import { Image, Pressable, Text, View } from "react-native";
+import { useAccount, useConnectors } from "wagmi";
 
 export default function Welcome() {
+  const router = useRouter();
+
+  const { mutate: connect, error: connectError } = Hooks.useConnect();
+  const { mutate: disconnect } = Hooks.useDisconnect();
+  const { address, isConnected, status } = useAccount();
+  const connectors = useConnectors();
+
+  const onConnect = () => {
+    connect({ connector: connectors[0] });
+  };
+
+  useEffect(() => {
+    // fix this
+    if (isConnected) {
+      router.navigate("/home");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isConnected]);
+
   return (
     <View className="flex-1 flex-col items-center justify-center p-12">
       <View className="flex-1 w-full items-center justify-center">
@@ -45,9 +67,7 @@ export default function Welcome() {
         <View className="items-center w-full py-8">
           <Pressable
             className="bg-gray-200 p-3 rounded-lg  w-full items-center"
-            onPress={() => {
-              console.log("[LOG]: Google Login");
-            }}
+            onPress={onConnect}
           >
             <Text>Passkey</Text>
           </Pressable>
