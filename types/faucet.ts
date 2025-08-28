@@ -27,6 +27,7 @@ export type SupportedToken = {
   balance: string;
   standardAmount: string;
   active: boolean;
+  isSupported?: boolean;
 };
 
 export type TokensResponse = {

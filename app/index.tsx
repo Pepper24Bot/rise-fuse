@@ -2,7 +2,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useRouter } from "expo-router";
 import { Hooks } from "porto/wagmi";
 import { useEffect, useState } from "react";
-import { View } from "react-native";
+import { Button, View } from "react-native";
 import { useAccount, useConnectors } from "wagmi";
 
 import TabBar from "./(pages)/_components/Tabs/TabBar";
@@ -23,14 +23,14 @@ function CustomHeader() {
 
 export default function Main() {
   const { mutate: disconnect } = Hooks.useDisconnect();
-  const { address, isConnected, status } = useAccount();
+  const { isConnected } = useAccount();
+  const connectors = useConnectors();
 
   const [isMounted, setIsMounted] = useState(false);
 
   const Tab = createBottomTabNavigator();
 
   const router = useRouter();
-  const connectors = useConnectors();
 
   // TODO: Implement routing with authentication
   useEffect(() => {
@@ -44,16 +44,20 @@ export default function Main() {
 
   return (
     <View className="flex-1">
-      {/* <Button
-        title="Disconnect"
-        onPress={() => {
-          disconnect({ connector: connectors[0] });
-        }}
-      /> */}
       <Tab.Navigator
         screenOptions={{
           // headerShown: false,
           headerBackground: CustomHeader,
+          headerRight: () => {
+            return (
+              <Button
+                title="Disconnect"
+                onPress={() => {
+                  disconnect({ connector: connectors[0] });
+                }}
+              />
+            );
+          },
         }}
         tabBar={CustomTabBar}
         initialRouteName="Asset" // temporary

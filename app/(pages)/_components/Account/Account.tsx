@@ -6,7 +6,7 @@ import { formatEther } from "viem";
 import { useAccount, useBalance } from "wagmi";
 
 export default function Account() {
-  const { isConnected, address } = useAccount();
+  const { address } = useAccount();
   const balance = useBalance({ address });
 
   const amount = useMemo(() => {

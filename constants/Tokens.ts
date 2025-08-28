@@ -8,8 +8,8 @@ export const SUPPORTED_TOKENS: Partial<SupportedToken>[] = [
     contractAddress: null,
     decimals: 18,
     isNative: true,
-    standardAmount: "0.00100000",
     active: true,
+    isSupported: true,
   },
   {
     id: 6,
@@ -18,8 +18,8 @@ export const SUPPORTED_TOKENS: Partial<SupportedToken>[] = [
     contractAddress: "0x99dbe4aea58e518c50a1c04ae9b48c9f6354612f",
     decimals: 18,
     isNative: false,
-    standardAmount: "1000.00000000",
     active: true,
+    isSupported: false,
   },
   {
     id: 7,
@@ -28,8 +28,8 @@ export const SUPPORTED_TOKENS: Partial<SupportedToken>[] = [
     contractAddress: "0x6f6f570f45833e249e27022648a26f4076f48f78",
     decimals: 18,
     isNative: false,
-    standardAmount: "1000000.00000000",
     active: true,
+    isSupported: false,
   },
   {
     id: 5,
@@ -38,8 +38,8 @@ export const SUPPORTED_TOKENS: Partial<SupportedToken>[] = [
     contractAddress: "0xd6e1afe5ca8d00a2efc01b89997abe2de47fdfaf",
     decimals: 18,
     isNative: false,
-    standardAmount: "100.00000000",
     active: true,
+    isSupported: true,
   },
   {
     id: 2,
@@ -48,8 +48,8 @@ export const SUPPORTED_TOKENS: Partial<SupportedToken>[] = [
     contractAddress: "0x8a93d247134d91e0de6f96547cb0204e5be8e5d8",
     decimals: 6,
     isNative: false,
-    standardAmount: "10.00000000",
     active: true,
+    isSupported: true,
   },
   {
     id: 3,
@@ -60,6 +60,7 @@ export const SUPPORTED_TOKENS: Partial<SupportedToken>[] = [
     isNative: false,
     standardAmount: "10.00000000",
     active: true,
+    isSupported: false,
   },
   {
     id: 4,
@@ -68,7 +69,7 @@ export const SUPPORTED_TOKENS: Partial<SupportedToken>[] = [
     contractAddress: "0xf32d39ff9f6aa7a7a64d7a4f00a54826ef791a55",
     decimals: 18,
     isNative: false,
-    standardAmount: "0.00050000",
     active: true,
+    isSupported: true,
   },
 ];
