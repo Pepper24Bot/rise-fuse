@@ -13,10 +13,6 @@ export default function Login() {
   const { address, isConnected, status } = useAccount();
   const connectors = useConnectors();
 
-  const onConnect = () => {
-    connect({ connector: connectors[0] });
-  };
-
   useEffect(() => {
     // fix this
     if (isConnected) {
@@ -63,13 +59,24 @@ export default function Login() {
             />
           </Pressable>
         </View>
-        <Separator content="OR" />
-        <View className="items-center w-full py-8">
+        <Separator content="OR via Passkey" />
+        <View className="items-center w-full py-8 gap-2">
+          {/* TODO: Clean this design up */}
           <Pressable
-            className="bg-gray-200 p-3 rounded-lg  w-full items-center"
-            onPress={onConnect}
+            className="bg-gray-200 p-3 rounded-lg w-full items-center"
+            onPress={() => {
+              connect({ connector: connectors[0], createAccount: true });
+            }}
           >
-            <Text>Passkey</Text>
+            <Text>Register</Text>
+          </Pressable>
+          <Pressable
+            className="bg-gray-200 p-3 rounded-lg w-full items-center"
+            onPress={() => {
+              connect({ connector: connectors[0], createAccount: false });
+            }}
+          >
+            <Text>Login</Text>
           </Pressable>
         </View>
       </View>

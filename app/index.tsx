@@ -8,12 +8,17 @@ import { useAccount, useConnectors } from "wagmi";
 import TabBar from "./(pages)/_components/Tabs/TabBar";
 import Asset from "./(pages)/asset";
 import History from "./(pages)/history";
+import Home from "./(pages)/home";
 import Market from "./(pages)/market";
 import Trade from "./(pages)/trade";
 
 // Wrapper to enable hooks within TabBar
 function CustomTabBar(props: any) {
   return <TabBar {...props} />;
+}
+
+function CustomHeader() {
+  return <View className="bg-gray-200" />;
 }
 
 export default function Main() {
@@ -47,11 +52,13 @@ export default function Main() {
       /> */}
       <Tab.Navigator
         screenOptions={{
-          headerShown: false,
+          // headerShown: false,
+          headerBackground: CustomHeader,
         }}
         tabBar={CustomTabBar}
+        initialRouteName="Asset" // temporary
       >
-        <Tab.Screen name="Home" component={Asset} />
+        <Tab.Screen name="Home" component={Home} />
         <Tab.Screen name="Market" component={Market} />
         <Tab.Screen name="Asset" component={Asset} />
         <Tab.Screen name="Trade" component={Trade} />
