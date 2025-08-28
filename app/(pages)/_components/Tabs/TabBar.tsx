@@ -11,6 +11,8 @@ export default function TabBar(props: Readonly<TabBarProps>) {
   const { state, navigation } = props;
   const path = usePathname();
 
+  console.log("path:: ", path);
+  // TODO: Fix this
   const checkIfTabIsActive = (tabName: string) => {
     return path.includes(tabName);
   };

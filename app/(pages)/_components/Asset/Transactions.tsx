@@ -1,7 +1,6 @@
 import { useRouter } from "expo-router";
 import {
   ArrowLeftRight,
-  DollarSign,
   Minus,
   MoveDownLeft,
   MoveUpRight,
@@ -16,34 +15,30 @@ export default function Transactions() {
   return (
     <View className="flex-row gap-2 items-center justify-center p-3 mt-8">
       {/* add disabled ui handling */}
-      <Pressable className="min-w-14 px-3 py-2 bg-gray-200 rounded-lg items-center opacity-50">
+      <Pressable className="min-w-20 px-3 py-2 bg-gray-200 rounded-lg items-center">
         <Plus />
         <Text>Buy</Text>
       </Pressable>
-      <Pressable className="min-w-14 px-3 py-2 bg-gray-200 rounded-lg items-center opacity-50">
+      <Pressable className="min-w-20 px-3 py-2 bg-gray-200 rounded-lg items-center">
         <Minus />
         <Text>Sell</Text>
       </Pressable>
       <Pressable
         onPress={() => {
-          router.navigate("/swap");
+          router.navigate("/asset/swap");
         }}
-        className="min-w-14 px-3 py-2 bg-gray-200 rounded-lg items-center"
+        className="min-w-20 px-3 py-2 bg-gray-200 rounded-lg items-center"
       >
         <ArrowLeftRight />
         <Text>Swap</Text>
       </Pressable>
-      <Pressable className="min-w-14 px-3 py-2 bg-gray-200 rounded-lg items-center opacity-50">
+      <Pressable className="min-w-20 px-3 py-2 bg-gray-200 rounded-lg items-center">
         <MoveUpRight />
         <Text>Send</Text>
       </Pressable>
-      <Pressable className="min-w-14 px-3 py-2 bg-gray-200 rounded-lg items-center opacity-50">
+      <Pressable className="min-w-20 px-3 py-2 bg-gray-200 rounded-lg items-center">
         <MoveDownLeft />
         <Text>Receive</Text>
-      </Pressable>
-      <Pressable className="min-w-14 px-3 py-2 bg-gray-200 rounded-lg items-center opacity-50">
-        <DollarSign />
-        <Text>Earn</Text>
       </Pressable>
     </View>
   );

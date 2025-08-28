@@ -2,6 +2,7 @@ import { getMaskedAddress } from "@/utilities/global";
 import { Copy, ExternalLink, Eye } from "lucide-react-native";
 import { useMemo } from "react";
 import { Pressable, Text, View } from "react-native";
+import { formatEther } from "viem";
 import { useAccount, useBalance } from "wagmi";
 
 export default function Account() {
@@ -9,7 +10,7 @@ export default function Account() {
   const balance = useBalance({ address });
 
   const amount = useMemo(() => {
-    return balance ? balance.data?.value : 0;
+    return balance.data?.value ? formatEther(balance.data?.value) : 0;
   }, [balance]);
 
   return (

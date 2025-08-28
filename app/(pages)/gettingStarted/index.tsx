@@ -36,7 +36,7 @@ export default function GettingStarted() {
     <View className="flex-1 relative flex-col justify-center p-12 bg-blue-400">
       <View className="absolute left-12">
         <Image
-          source={require("../../assets/logo/rise.png")}
+          source={require("@/assets/logo/rise.png")}
           className="w-[320px] max-h-[400px] mb-8"
         />
         <Text className="font-bold text-4xl text-white">Infinite Speed</Text>

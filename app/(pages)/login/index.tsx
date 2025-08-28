@@ -26,7 +26,7 @@ export default function Login() {
       <View className="flex-1 w-full items-center justify-center">
         <View className="items-center gap-2">
           <Image
-            source={require("../../assets/logo/rise-logo.png")}
+            source={require("@/assets/logo/rise-logo.png")}
             className="w-[80px] max-h-[100px]"
           />
           <Text className="">
@@ -42,7 +42,7 @@ export default function Login() {
             }}
           >
             <Image
-              source={require("../../assets/logo/social/google.png")}
+              source={require("@/assets/logo/social/google.png")}
               className="w-8 h-8"
             />
           </Pressable>
@@ -54,7 +54,7 @@ export default function Login() {
             }}
           >
             <Image
-              source={require("../../assets/logo/social/twitterX.png")}
+              source={require("@/assets/logo/social/twitterX.png")}
               className="w-8 h-8"
             />
           </Pressable>
@@ -63,7 +63,7 @@ export default function Login() {
         <View className="items-center w-full py-8 gap-2">
           {/* TODO: Clean this design up */}
           <Pressable
-            className="bg-gray-200 p-3 rounded-lg w-full items-center"
+            className="bg-gray-200 p-3 rounded-lg  w-full items-center"
             onPress={() => {
               connect({ connector: connectors[0], createAccount: true });
             }}
@@ -71,7 +71,7 @@ export default function Login() {
             <Text>Register</Text>
           </Pressable>
           <Pressable
-            className="bg-gray-200 p-3 rounded-lg w-full items-center"
+            className="bg-gray-200 p-3 rounded-lg  w-full items-center"
             onPress={() => {
               connect({ connector: connectors[0], createAccount: false });
             }}
