@@ -29,7 +29,7 @@ export default function SwapField(props: Readonly<FieldProps>) {
   });
 
   const supportedToken = useReadContract({
-    query: { enabled: token.symbol !== "ETH" && !!address },
+    query: { enabled: !!address },
     abi: erc20Abi,
     address: token.contractAddress?.toLowerCase() as Address,
     functionName: "balanceOf",

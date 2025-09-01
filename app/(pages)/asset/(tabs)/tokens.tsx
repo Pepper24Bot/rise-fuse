@@ -1,8 +1,16 @@
+import TokenETH from "@/assets/icons/tokens/eth.svg";
+import TokenMOG from "@/assets/icons/tokens/mog.svg";
+import TokenPEPE from "@/assets/icons/tokens/pepe.svg";
+import TokenRISE from "@/assets/icons/tokens/rise.svg";
+import TokenUSDC from "@/assets/icons/tokens/usdc.svg";
+import TokenUSDT from "@/assets/icons/tokens/usdt.svg";
+import TokenWBTC from "@/assets/icons/tokens/wbtc.svg";
+
 import { SUPPORTED_TOKENS } from "@/constants/Tokens";
 import { useMemo } from "react";
 import { Text, View } from "react-native";
-import { Address, erc20Abi, formatUnits } from "viem";
-import { useAccount, useReadContracts } from "wagmi";
+import { Address, erc20Abi, formatEther, formatUnits } from "viem";
+import { useAccount, useBalance, useReadContracts } from "wagmi";
 
 export default function Tokens() {
   const { address } = useAccount();
@@ -13,55 +21,108 @@ export default function Tokens() {
     args: [address as Address],
   } as const;
 
+  const { data: nativeBalance } = useBalance({ address });
+
+  const nativeToken = SUPPORTED_TOKENS[0]; // ETH
+
+  const supportedTokens = SUPPORTED_TOKENS.filter((token) => {
+    return !token.isNative;
+  });
+
+  const getContracts = () => {
+    return supportedTokens.map((token) => {
+      return {
+        ...contract,
+        address: token.contractAddress as Address,
+      };
+    });
+  };
+
   // TODO: Change to porto's Hooks.useAssets as soon as available
-  const { data, isSuccess } = useReadContracts({
-    contracts: [
-      {
-        ...contract,
-        address: "0x99dbe4aea58e518c50a1c04ae9b48c9f6354612f" as Address,
-      },
-      {
-        ...contract,
-        address: "0x6f6f570f45833e249e27022648a26f4076f48f78" as Address,
-      },
-      {
-        ...contract,
-        address: "0xd6e1afe5ca8d00a2efc01b89997abe2de47fdfaf" as Address,
-      },
-      {
-        ...contract,
-        address: "0x8a93d247134d91e0de6f96547cb0204e5be8e5d8" as Address,
-      },
-      {
-        ...contract,
-        address: "0x40918ba7f132e0acba2ce4de4c4baf9bd2d7d849" as Address,
-      },
-      {
-        ...contract,
-        address: "0xf32d39ff9f6aa7a7a64d7a4f00a54826ef791a55" as Address,
-      },
-    ],
+  const { data } = useReadContracts({
+    contracts: getContracts(),
   });
 
   const balances = useMemo(() => {
-    return data ?? [];
+    const tokensBalance = data?.map((balance) => {
+      return balance.result;
+    });
+
+    return tokensBalance ?? [];
   }, [data]);
-  console.log("balances:: ", balances);
+
+  const getTokenIcon = (symbol: string) => {
+    switch (symbol.toUpperCase()) {
+      case "ETH":
+        return <TokenETH width={40} height={40} />;
+      case "USDC":
+        return <TokenUSDC width={40} height={40} />;
+      case "USDT":
+        return <TokenUSDT width={40} height={40} />;
+      case "PEPE":
+        return <TokenPEPE width={40} height={40} />;
+      case "WBTC":
+        return <TokenWBTC width={40} height={40} />;
+      case "MOG":
+        return <TokenMOG width={40} height={40} />;
+      case "RISE":
+        return <TokenRISE width={40} height={28} />;
+      default:
+        return null;
+    }
+  };
 
   return (
-    <View>
-      {SUPPORTED_TOKENS.map((token, index) => {
-        return (
-          <View className="flex-row justify-between" key={token.id}>
-            <Text>{token.name}</Text>
-
+    <View className="gap-3 bg-white h-full pt-4">
+      {/* Native Token */}
+      <View className="flex-row items-center justify-between py-2">
+        <View className="flex-row items-center  gap-3">
+          {getTokenIcon("ETH")}
+          <View>
+            <Text className="font-bold">{nativeToken.symbol}</Text>
             <View className="flex-row gap-2">
-              <Text>
-                {balances[index] && balances[index].result
-                  ? formatUnits(balances[index].result, token.decimals ?? 18)
+              {/* TODO: Change when indexer is ready */}
+              <Text className="text-gray-400">$4,633.06</Text>
+              {/* TODO: Change when indexer is ready - APY*/}
+              <Text className="text-green-700">+7.98%</Text>
+            </View>
+          </View>
+        </View>
+        <View className="items-end">
+          <Text className="font-bold">
+            {formatEther(nativeBalance?.value ?? 0n)}
+          </Text>
+          {/* TODO: Change when indexer is ready */}
+          <Text className="text-gray-400">$48.7</Text>
+        </View>
+      </View>
+
+      {supportedTokens.map((token, index) => {
+        return (
+          <View
+            className="flex-row items-center justify-between py-2"
+            key={token.id}
+          >
+            <View className="flex-row gap-4 items-center ">
+              {getTokenIcon(token.symbol ?? "")}
+              <View>
+                <Text className="font-bold">{token.symbol}</Text>
+                <View className="flex-row gap-2">
+                  {/* TODO: Change when indexer is ready */}
+                  <Text className="text-gray-400">$0.99967</Text>
+                  {/* TODO: Change when indexer is ready - APY*/}
+                  <Text className="text-green-700">+7.98%</Text>
+                </View>
+              </View>
+            </View>
+            <View className="items-end">
+              <Text className="font-bold">
+                {balances
+                  ? formatUnits(balances[index] ?? 0n, token.decimals ?? 18)
                   : 0}
               </Text>
-              <Text className="font-bold">{token.symbol}</Text>
+              {/* TODO: Change when indexer is ready */}
+              <Text className="text-gray-400">$48.7</Text>
             </View>
           </View>
         );

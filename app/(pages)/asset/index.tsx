@@ -13,13 +13,12 @@ const Tab = createMaterialTopTabNavigator();
 
 export default function Asset() {
   return (
-    <View className="flex-1 p-8 bg-white">
+    <View className="flex-1 p-6 bg-white">
       <Account />
       <Transactions />
       <Separator />
       <Tab.Navigator
         screenOptions={{
-          //  tabBarPosition: "top",
           tabBarActiveTintColor: "blue",
         }}
       >
