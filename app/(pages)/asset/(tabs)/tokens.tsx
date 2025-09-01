@@ -13,6 +13,7 @@ export default function Tokens() {
     args: [address as Address],
   } as const;
 
+  // TODO: Change to porto's Hooks.useAssets as soon as available
   const { data, isSuccess } = useReadContracts({
     contracts: [
       {
