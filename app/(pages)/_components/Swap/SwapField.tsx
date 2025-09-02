@@ -1,11 +1,12 @@
 import Separator from "@/components/Separator";
+import TokenSelection from "./TokenSelection";
+
 import { SupportedToken } from "@/types/faucet";
 import { getMaskedAddress } from "@/utilities/global";
 import { useMemo, useState } from "react";
 import { Button, Text, TextInput, View } from "react-native";
 import { Address, erc20Abi, formatEther, formatUnits } from "viem";
 import { useAccount, useBalance, useReadContract } from "wagmi";
-import { TokenSelection } from "./TokenSelection";
 
 type FieldProps = {
   setData: (req: { value: string; token: Partial<SupportedToken> }) => void;

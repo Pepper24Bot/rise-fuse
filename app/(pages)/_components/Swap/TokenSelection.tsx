@@ -12,7 +12,7 @@ type TokenProps = {
   selectToken: (token: Partial<SupportedToken>) => void;
 };
 
-export function TokenSelection(props: Readonly<TokenProps>) {
+export default function TokenSelection(props: Readonly<TokenProps>) {
   const { token, open, setOpen, selectToken } = props;
 
   return (
