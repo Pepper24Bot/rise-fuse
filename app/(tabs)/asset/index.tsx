@@ -11,11 +11,6 @@ import Transactions from "./_components/Transactions";
 
 const Tab = createMaterialTopTabNavigator();
 
-// Wrapper to enable hooks within TabBar
-function CustomTabBar(props: any) {
-  return <AssetTabs {...props} />;
-}
-
 export default function Asset() {
   return (
     <View className="flex-1 p-6 bg-white">
@@ -25,7 +20,8 @@ export default function Asset() {
         screenOptions={{
           tabBarActiveTintColor: "blue",
         }}
-        tabBar={CustomTabBar}
+        tabBar={AssetTabs}
+        initialRouteName="Token"
       >
         <Tab.Screen name="Token" component={Tokens} />
         <Tab.Screen name="Defi" component={Defi} />

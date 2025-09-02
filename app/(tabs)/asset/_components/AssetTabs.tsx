@@ -1,6 +1,5 @@
 import { cn } from "@/utilities/global";
 import { MaterialTopTabBarProps } from "@react-navigation/material-top-tabs";
-import { usePathname } from "expo-router";
 import { ChevronDown } from "lucide-react-native";
 import { Text, TouchableOpacity, View } from "react-native";
 
@@ -8,11 +7,7 @@ type TabBarProps = MaterialTopTabBarProps;
 
 export default function AssetTabBar(props: Readonly<TabBarProps>) {
   const { state, navigation } = props;
-  const path = usePathname();
-
-  const checkIfTabIsActive = (tabName: string) => {
-    return path.includes(tabName);
-  };
+  const navState = navigation.getState();
 
   const onRoutePress = (name: string, key: string, isFocused: boolean) => {
     const event = navigation.emit({
@@ -31,7 +26,7 @@ export default function AssetTabBar(props: Readonly<TabBarProps>) {
       <View className="flex-row gap-3 py-3">
         {state.routes.map((route, index) => {
           const isFocused = state.index === index;
-          const isActive = checkIfTabIsActive(route.name);
+          const isActive = navState.index === index;
 
           return (
             <View
