@@ -30,7 +30,7 @@ export default function TokenSelection(props: Readonly<TokenProps>) {
         backdropColor=""
         className="justify-end ml-0 mb-0 h-full w-full absolute bottom-0 left-0 max-h-80"
       >
-        <View className="bg-white p-4 h-full w-full gap-2">
+        <View className="bg-white p-4 flex-1 gap-2">
           {SUPPORTED_TOKENS.filter((token) => {
             return token.isSupported;
           }).map((token) => {

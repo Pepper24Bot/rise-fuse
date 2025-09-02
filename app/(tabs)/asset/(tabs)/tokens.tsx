@@ -73,7 +73,7 @@ export default function Tokens() {
   };
 
   return (
-    <View className="gap-3 bg-white h-full pt-4">
+    <View className="gap-3 bg-white flex-1 pt-4">
       {/* Native Token */}
       <View className="flex-row items-center justify-between py-2">
         <View className="flex-row items-center  gap-3">

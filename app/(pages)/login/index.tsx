@@ -2,15 +2,14 @@ import Separator from "@/components/Separator";
 import { Link, useRouter } from "expo-router";
 import { Hooks } from "porto/wagmi";
 import { useEffect } from "react";
-import { Image, Pressable, Text, View } from "react-native";
+import { Image, Pressable, Text, TouchableOpacity, View } from "react-native";
 import { useAccount, useConnectors } from "wagmi";
 
 export default function Login() {
   const router = useRouter();
 
-  const { mutate: connect, error: connectError } = Hooks.useConnect();
-  const { mutate: disconnect } = Hooks.useDisconnect();
-  const { address, isConnected, status } = useAccount();
+  const { mutate: connect } = Hooks.useConnect();
+  const { isConnected } = useAccount();
   const connectors = useConnectors();
 
   useEffect(() => {
@@ -62,22 +61,22 @@ export default function Login() {
         <Separator content="OR via Passkey" />
         <View className="items-center w-full py-8 gap-2">
           {/* TODO: Clean this design up */}
-          <Pressable
+          <TouchableOpacity
             className="bg-gray-200 p-3 rounded-lg  w-full items-center"
             onPress={() => {
               connect({ connector: connectors[0], createAccount: true });
             }}
           >
             <Text>Register</Text>
-          </Pressable>
-          <Pressable
+          </TouchableOpacity>
+          <TouchableOpacity
             className="bg-gray-200 p-3 rounded-lg  w-full items-center"
             onPress={() => {
               connect({ connector: connectors[0], createAccount: false });
             }}
           >
             <Text>Login</Text>
-          </Pressable>
+          </TouchableOpacity>
         </View>
       </View>
       <View className="flex-row gap-4 justify-end items-end flex-1 py-4">

@@ -23,7 +23,7 @@ export default function TabBar(props: Readonly<TabBarProps>) {
   };
 
   return (
-    <View className="flex-row gap-2 px-8 py-3 bg-gray-200">
+    <View className="flex-row gap-2 px-8 py-3 bg-gray-100">
       {state.routes.map((route, index) => {
         const isFocused = state.index === index;
         const isActive = navState.index === index;

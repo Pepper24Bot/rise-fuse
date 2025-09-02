@@ -1,7 +1,7 @@
 import { getMaskedAddress } from "@/utilities/global";
 import { Copy, ExternalLink, Eye } from "lucide-react-native";
 import { useMemo } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import { formatEther } from "viem";
 import { useAccount, useBalance } from "wagmi";
 
@@ -19,12 +19,12 @@ export default function Account() {
         <View className="flex-row items-center gap-6">
           <Text className="text-lg">{getMaskedAddress(address ?? "")}</Text>
           <View className="flex-row gap-2 items-center">
-            <Pressable>
+            <TouchableOpacity>
               <Copy size={16} />
-            </Pressable>
-            <Pressable>
+            </TouchableOpacity>
+            <TouchableOpacity>
               <Eye size={20} />
-            </Pressable>
+            </TouchableOpacity>
           </View>
         </View>
         {/* TODO: Check how to get all the assets of an address and how to convert them into a chosen fiat currency */}
@@ -32,10 +32,10 @@ export default function Account() {
           {amount} {balance.data?.symbol}
         </Text>
       </View>
-      <Pressable className="px-4 py-2 bg-gray-200 rounded-lg flex-row items-center gap-2">
+      <TouchableOpacity className="px-4 py-2 bg-gray-100 rounded-lg flex-row items-center gap-2">
         <Text>Portfolio</Text>
         <ExternalLink size={18} />
-      </Pressable>
+      </TouchableOpacity>
     </View>
   );
 }

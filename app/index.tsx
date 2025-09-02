@@ -1,19 +1,19 @@
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { useRouter } from "expo-router";
-import { Hooks } from "porto/wagmi";
+
 import { useEffect, useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { useAccount, useConnectors } from "wagmi";
+import { useAccount } from "wagmi";
+
 import TabNavigator from "./(tabs)/_components/TabNavigator";
+import DrawerContent from "./_component/DrawerContent";
 
 const Drawer = createDrawerNavigator();
 
 export default function Main() {
-  const { mutate: disconnect } = Hooks.useDisconnect();
   const { isConnected } = useAccount();
   const [isMounted, setIsMounted] = useState(false);
 
-  const connectors = useConnectors();
   const router = useRouter();
 
   // TODO: Implement routing with authentication
@@ -28,11 +28,21 @@ export default function Main() {
 
   return (
     <SafeAreaProvider>
-      <Drawer.Navigator screenOptions={{ headerShown: false }}>
+      <Drawer.Navigator
+        screenOptions={{
+          headerShown: false,
+          drawerType: "back",
+          drawerStyle: { width: "100%" },
+        }}
+        drawerContent={DrawerContent}
+        backBehavior="history"
+      >
         <Drawer.Screen
           name="MainTabs"
           component={TabNavigator}
-          options={{ drawerItemStyle: { display: "none" } }}
+          options={{
+            drawerItemStyle: { display: "none" },
+          }}
         />
       </Drawer.Navigator>
     </SafeAreaProvider>

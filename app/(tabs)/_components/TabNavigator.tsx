@@ -16,16 +16,6 @@ export default function TabNavigator() {
     <Tab.Navigator
       screenOptions={{
         header: Header,
-        // headerRight: () => {
-        //   return (
-        //     <Button
-        //       title="Disconnect"
-        //       onPress={() => {
-        //         disconnect({ connector: connectors[0] });
-        //       }}
-        //     />
-        //   );
-        // },
       }}
       tabBar={TabBar}
       initialRouteName="Asset" // temporary
