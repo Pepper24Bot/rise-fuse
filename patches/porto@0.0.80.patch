@@ -1,0 +1,41 @@
+diff --git a/_dist/core/internal/modes/relay.js b/_dist/core/internal/modes/relay.js
+index b1113d980b8cd63e5561636725a488571b802309..6cd75c5fb249376df2a24580afc10dd94c5a1ddd 100644
+--- a/_dist/core/internal/modes/relay.js
++++ b/_dist/core/internal/modes/relay.js
+@@ -347,6 +347,7 @@ export function relay(parameters = {}) {
+                                         id: credentialId,
+                                         publicKey: PublicKey.fromHex(key.publicKey),
+                                     },
++                                    rpId: keystoreHost,
+                                     id: address,
+                                 });
+                         }
+@@ -589,6 +590,7 @@ export function relay(parameters = {}) {
+                     merchantRpcUrl,
+                     preCalls,
+                     requiredFunds: multichain ? requiredFunds : undefined,
++                    webAuthn
+                 });
+                 await PreCalls.clear({
+                     address: account.address,
+diff --git a/_dist/viem/RelayActions.js b/_dist/viem/RelayActions.js
+index 1c11fb4a408de16476e139b454bb1294ca61b98c..a712218635e380e76d6707c23467c3bd26b30727 100644
+--- a/_dist/viem/RelayActions.js
++++ b/_dist/viem/RelayActions.js
+@@ -172,7 +172,7 @@ export async function prepareUpgradeAccount(client, parameters) {
+  * @returns Bundle identifier.
+  */
+ export async function sendCalls(client, parameters) {
+-    const { account = client.account, chain } = parameters;
++    const { account = client.account, chain, webAuthn } = parameters;
+     // If no signature is provided, prepare the calls and sign them.
+     const account_ = account ? Account.from(account) : undefined;
+     if (!account_)
+@@ -212,6 +212,7 @@ export async function sendCalls(client, parameters) {
+     const signature = await Key.sign(key, {
+         payload: digest,
+         wrap: false,
++        webAuthn
+     });
+     // Broadcast the bundle to the Relay.
+     return await sendPreparedCalls(client, {

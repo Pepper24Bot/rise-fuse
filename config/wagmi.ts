@@ -1,4 +1,3 @@
-import { asyncStorage } from "@/utilities/storage";
 import {
   base64URLStringToBuffer,
   bufferToBase64URLString,
@@ -9,6 +8,7 @@ import * as passkeys from "react-native-passkeys";
 import { riseTestnet } from "rise-wallet";
 import { http } from "viem";
 import { createConfig } from "wagmi";
+import { asyncStorage } from "@/utilities/storage";
 
 export const wagmiConfig = createConfig({
   chains: [riseTestnet],
@@ -20,6 +20,7 @@ export const wagmiConfig = createConfig({
   connectors: [
     porto({
       relay: http("https://rise-testnet-porto.fly.dev"),
+      storage: { ...asyncStorage, sizeLimit: 1024 * 1024 * 6 }, // Maximum size of 6MB
       mode: Mode.relay({
         keystoreHost: "asset-pepper24bots-projects.vercel.app",
         webAuthn: {
@@ -29,19 +30,19 @@ export const wagmiConfig = createConfig({
             const res = await passkeys.create({
               ...opts.publicKey,
               challenge: bufferToBase64URLString(
-                opts.publicKey.challenge as ArrayBuffer
+                opts.publicKey.challenge as ArrayBuffer,
               ),
               user: {
                 ...opts.publicKey.user,
                 id: bufferToBase64URLString(
-                  opts.publicKey.user.id as ArrayBuffer
+                  opts.publicKey.user.id as ArrayBuffer,
                 ),
               },
               excludeCredentials: opts.publicKey.excludeCredentials?.map(
                 (cred) => ({
                   ...cred,
                   id: bufferToBase64URLString(cred.id as ArrayBuffer),
-                })
+                }),
               ),
             });
 
@@ -59,11 +60,11 @@ export const wagmiConfig = createConfig({
               response: {
                 ...res.response,
                 attestationObject: base64URLStringToBuffer(
-                  res.response.attestationObject
+                  res.response.attestationObject,
                 ),
                 clientDataJSON: Uint8Array.from(
                   atob(res.response.clientDataJSON),
-                  (char) => char.charCodeAt(0)
+                  (char) => char.charCodeAt(0),
                 ).buffer,
               },
             };
@@ -79,10 +80,10 @@ export const wagmiConfig = createConfig({
                 (cred) => ({
                   ...cred,
                   id: bufferToBase64URLString(cred.id as ArrayBuffer),
-                })
+                }),
               ),
               challenge: bufferToBase64URLString(
-                opts.publicKey.challenge as ArrayBuffer
+                opts.publicKey.challenge as ArrayBuffer,
               ),
             });
 
@@ -101,11 +102,11 @@ export const wagmiConfig = createConfig({
                 ...res.response,
                 clientDataJSON: Uint8Array.from(
                   atob(res.response.clientDataJSON),
-                  (char) => char.charCodeAt(0)
+                  (char) => char.charCodeAt(0),
                 ).buffer,
                 signature: base64URLStringToBuffer(res.response.signature),
                 authenticatorData: base64URLStringToBuffer(
-                  res.response.authenticatorData
+                  res.response.authenticatorData,
                 ),
                 userHandle: res.response.userHandle
                   ? base64URLStringToBuffer(res.response.userHandle)
