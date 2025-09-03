@@ -1,7 +1,8 @@
+import Text from "@/components/ui/Text";
 import { asyncStorage } from "@/utilities/storage";
 import { Link, useRouter } from "expo-router";
 import { useEffect } from "react";
-import { Image, Text, TouchableOpacity, View } from "react-native";
+import { Image, TouchableOpacity, View } from "react-native";
 
 export default function GettingStarted() {
   const router = useRouter();

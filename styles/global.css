@@ -1,3 +1,28 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@import "../styles/base/index.css";
+
+/* Note: CSS Tokens here are based on Design Guide */
+/* Avoid hard coding colors so it's easier to change themes (light|dark), and palette */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-primary: #352c6d;
+    --color-background: #000;
+    --color-foreground: #edeeef;
+
+    /* Text */
+    --color-text-primary: #ffff;
+  }
+}
+
+:root {
+  --color-primary: #6d5ad5;
+  --color-background: #fcfcfd;
+  --color-foreground: #1e2024;
+
+  /* Text */
+  --color-text-primary: #000;
+}

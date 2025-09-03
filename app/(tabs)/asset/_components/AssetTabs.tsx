@@ -1,7 +1,8 @@
+import Text from "@/components/ui/Text";
 import { cn } from "@/utilities/global";
 import { MaterialTopTabBarProps } from "@react-navigation/material-top-tabs";
 import { ChevronDown } from "lucide-react-native";
-import { Text, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 
 type TabBarProps = MaterialTopTabBarProps;
 

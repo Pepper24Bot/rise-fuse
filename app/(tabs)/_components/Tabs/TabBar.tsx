@@ -1,4 +1,5 @@
-import { Text, TouchableOpacity, View } from "react-native";
+import Text from "@/components/ui/Text";
+import { TouchableOpacity, View } from "react-native";
 
 import { cn } from "@/utilities/global";
 import type { BottomTabBarProps } from "@react-navigation/bottom-tabs";

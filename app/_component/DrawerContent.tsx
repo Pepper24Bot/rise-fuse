@@ -1,11 +1,12 @@
 import Separator from "@/components/Separator";
+import Text from "@/components/ui/Text";
+
 import { DrawerContentComponentProps } from "@react-navigation/drawer";
 import { ArrowLeft } from "lucide-react-native";
 import { Hooks } from "porto/wagmi";
 import {
   Appearance,
   Button,
-  Text,
   TouchableOpacity,
   View,
   useColorScheme,
@@ -18,7 +19,8 @@ export default function DrawerContent(
 ) {
   const { navigation } = props;
   const { mutate: disconnect } = Hooks.useDisconnect();
-  const colorScheme = useColorScheme(); // "light" | "dark"
+
+  const colorScheme = useColorScheme();
   const insets = useSafeAreaInsets();
   const connectors = useConnectors();
 
@@ -38,7 +40,7 @@ export default function DrawerContent(
         </TouchableOpacity>
         <Text className="text-xl">Settings</Text>
       </View>
-      <View className="flex-1 gap-3 bg-white dark:bg-black p-4 justify-between">
+      <View className="flex-1 gap-3 bg-primary p-4 justify-between">
         <View className="gap-4">
           <View className="flex-row gap-4 items-center">
             <Text className="font-bold">Preference</Text>

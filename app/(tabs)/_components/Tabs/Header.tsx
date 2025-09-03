@@ -1,7 +1,9 @@
+import Text from "@/components/ui/Text";
+
 import { BottomTabHeaderProps } from "@react-navigation/bottom-tabs";
 import { DrawerActions, useNavigation } from "@react-navigation/native";
 import { Menu } from "lucide-react-native";
-import { Text, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function Header(props: Readonly<BottomTabHeaderProps>) {

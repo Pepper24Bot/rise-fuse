@@ -6,9 +6,11 @@ import TokenUSDC from "@/assets/icons/tokens/usdc.svg";
 import TokenUSDT from "@/assets/icons/tokens/usdt.svg";
 import TokenWBTC from "@/assets/icons/tokens/wbtc.svg";
 
+import Text from "@/components/ui/Text";
+
 import { SUPPORTED_TOKENS } from "@/constants/Tokens";
 import { useMemo } from "react";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import { Address, erc20Abi, formatEther, formatUnits } from "viem";
 import { useAccount, useBalance, useReadContracts } from "wagmi";
 

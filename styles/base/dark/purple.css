@@ -1,0 +1,34 @@
+@media (prefers-color-scheme: dark) {
+  :root {
+    --purple-1: #000;
+    --purple-2: #100f1f;
+    --purple-3: #211c44;
+    --purple-4: #2d2361;
+    --purple-5: #372e6f;
+    --purple-6: #423a7c;
+    --purple-7: #50498d;
+    --purple-8: #625ca2;
+    --purple-9: #100f1f;
+    --purple-10: #352c6d;
+    --purple-11: #b0acf9;
+    --purple-12: #dfdeff;
+
+    --purple-a1: #00000000;
+    --purple-a2: #847cff1f;
+    --purple-a3: #7c69ff44;
+    --purple-a4: #775dff61;
+    --purple-a5: #7f6aff6f;
+    --purple-a6: #8878ff7c;
+    --purple-a7: #9184ff8d;
+    --purple-a8: #9b91ffa2;
+    --purple-a9: #7c69ff44;
+    --purple-a10: #7c67ff6d;
+    --purple-a11: #b4b0fff9;
+    --purple-a12: #dfdeff;
+
+    --purple-contrast: #fff;
+    --purple-surface: #201e3e80;
+    --purple-indicator: #211c44;
+    --purple-track: #211c44;
+  }
+}

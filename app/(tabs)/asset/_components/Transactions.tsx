@@ -1,3 +1,4 @@
+import Text from "@/components/ui/Text";
 import { useRouter } from "expo-router";
 import {
   ArrowLeftRight,
@@ -6,7 +7,7 @@ import {
   MoveUpRight,
   Plus,
 } from "lucide-react-native";
-import { Text, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 
 export default function Transactions() {
   const router = useRouter();

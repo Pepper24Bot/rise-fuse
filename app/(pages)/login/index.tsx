@@ -1,9 +1,10 @@
+import Separator from "@/components/Separator";
+import Text from "@/components/ui/Text";
 import { Link, useRouter } from "expo-router";
 import { Hooks } from "porto/wagmi";
 import { useEffect } from "react";
-import { Image, Pressable, Text, TouchableOpacity, View } from "react-native";
+import { Image, Pressable, TouchableOpacity, View } from "react-native";
 import { useAccount, useConnectors } from "wagmi";
-import Separator from "@/components/Separator";
 
 export default function Login() {
   const router = useRouter();

@@ -23,7 +23,6 @@ export default function Main() {
     if (!isConnected && isMounted) {
       router.navigate("/gettingStarted");
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isConnected, isMounted, router]);
 
   // console.log("");

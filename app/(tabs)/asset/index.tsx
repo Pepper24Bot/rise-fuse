@@ -13,7 +13,7 @@ const Tab = createMaterialTopTabNavigator();
 
 export default function Asset() {
   return (
-    <View className="flex-1 p-6 bg-white">
+    <View className="flex-1 p-6 bg-background">
       <Account />
       <Transactions />
       <Tab.Navigator

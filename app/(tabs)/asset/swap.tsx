@@ -1,5 +1,11 @@
+import Text from "@/components/ui/Text";
+
+import { type ClobToken, ClobTokens, TradingBooks } from "@/constants/Clob";
+import { UnifiedCLOB } from "@/contracts/clob";
+import { MintableERC20 } from "@/contracts/mintableErc20";
+import { usePlaceMarketOrder } from "@/hooks/useClob";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, View } from "react-native";
 import { formatUnits, parseUnits } from "viem";
 import {
   useAccount,
@@ -7,10 +13,6 @@ import {
   useReadContract,
   useReadContracts,
 } from "wagmi";
-import { type ClobToken, ClobTokens, TradingBooks } from "@/constants/Clob";
-import { UnifiedCLOB } from "@/contracts/clob";
-import { MintableERC20 } from "@/contracts/mintableErc20";
-import { usePlaceMarketOrder } from "@/hooks/useClob";
 import SwapField from "../_components/Swap/SwapField";
 
 export default function Swap() {
@@ -85,11 +87,11 @@ export default function Swap() {
           ? book.base
           : book.base.symbol === buyToken.symbol
             ? book.quote
-            : null,
+            : null
       )
         .filter((token): token is ClobToken => token !== null)
         .filter((token, index, array) => array.indexOf(token) === index), // remove duplicates
-    [buyToken],
+    [buyToken]
   );
   const availableBuyTokens = useMemo(
     () =>
@@ -98,11 +100,11 @@ export default function Swap() {
           ? book.quote
           : book.quote.symbol === sellToken.symbol
             ? book.base
-            : null,
+            : null
       )
         .filter((token): token is ClobToken => token !== null)
         .filter((token, index, array) => array.indexOf(token) === index), // remove duplicates
-    [sellToken],
+    [sellToken]
   );
   const tradingBook = useMemo(() => {
     for (const book of TradingBooks) {
@@ -205,13 +207,13 @@ export default function Swap() {
       // Selling base token, calculate buy amount
       const buyAmount = sellAmount * price;
       setBuyAmountRaw(
-        formatUnits(buyAmount, buyToken.decimals + sellToken.decimals),
+        formatUnits(buyAmount, buyToken.decimals + sellToken.decimals)
       );
     } else {
       // Selling quote token, calculate buy amount
       const buyAmount = (sellAmount * 10n ** BigInt(buyToken.decimals)) / price;
       setBuyAmountRaw(
-        formatUnits(buyAmount, buyToken.decimals + sellToken.decimals),
+        formatUnits(buyAmount, buyToken.decimals + sellToken.decimals)
       );
     }
   };
@@ -230,14 +232,14 @@ export default function Swap() {
       // Buying base token, calculate sell amount
       const sellAmount = buyAmount * price;
       setSellAmountRaw(
-        formatUnits(sellAmount, sellToken.decimals + buyToken.decimals),
+        formatUnits(sellAmount, sellToken.decimals + buyToken.decimals)
       );
     } else {
       // Buying quote token, calculate sell amount
       const sellAmount =
         (buyAmount * 10n ** BigInt(sellToken.decimals)) / price;
       setSellAmountRaw(
-        formatUnits(sellAmount, sellToken.decimals + buyToken.decimals),
+        formatUnits(sellAmount, sellToken.decimals + buyToken.decimals)
       );
     }
   };
