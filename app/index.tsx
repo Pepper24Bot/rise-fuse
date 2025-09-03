@@ -1,34 +1,18 @@
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createDrawerNavigator } from "@react-navigation/drawer";
 import { useRouter } from "expo-router";
-import { Hooks } from "porto/wagmi";
+
 import { useEffect, useState } from "react";
-import { Button, View } from "react-native";
-import { useAccount, useConnectors } from "wagmi";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { useAccount } from "wagmi";
 
-import TabBar from "./(pages)/_components/Tabs/TabBar";
-import Asset from "./(pages)/asset";
-import History from "./(pages)/history";
-import Home from "./(pages)/home";
-import Market from "./(pages)/market";
-import Trade from "./(pages)/trade";
+import TabNavigator from "./(tabs)/_components/TabNavigator";
+import DrawerContent from "./_component/DrawerContent";
 
-// Wrapper to enable hooks within TabBar
-function CustomTabBar(props: any) {
-  return <TabBar {...props} />;
-}
-
-function CustomHeader() {
-  return <View className="bg-gray-200" />;
-}
+const Drawer = createDrawerNavigator();
 
 export default function Main() {
-  const { mutate: disconnect } = Hooks.useDisconnect();
   const { isConnected } = useAccount();
-  const connectors = useConnectors();
-
   const [isMounted, setIsMounted] = useState(false);
-
-  const Tab = createBottomTabNavigator();
 
   const router = useRouter();
 
@@ -43,31 +27,24 @@ export default function Main() {
   }, [isConnected, isMounted, router]);
 
   return (
-    <View className="flex-1">
-      <Tab.Navigator
+    <SafeAreaProvider>
+      <Drawer.Navigator
         screenOptions={{
-          // headerShown: false,
-          headerBackground: CustomHeader,
-          headerRight: () => {
-            return (
-              <Button
-                title="Disconnect"
-                onPress={() => {
-                  disconnect({ connector: connectors[0] });
-                }}
-              />
-            );
-          },
+          headerShown: false,
+          drawerType: "back",
+          drawerStyle: { width: "100%" },
         }}
-        tabBar={CustomTabBar}
-        initialRouteName="Asset" // temporary
+        drawerContent={DrawerContent}
+        backBehavior="history"
       >
-        <Tab.Screen name="Home" component={Home} />
-        <Tab.Screen name="Market" component={Market} />
-        <Tab.Screen name="Asset" component={Asset} />
-        <Tab.Screen name="Trade" component={Trade} />
-        <Tab.Screen name="History" component={History} />
-      </Tab.Navigator>
-    </View>
+        <Drawer.Screen
+          name="MainTabs"
+          component={TabNavigator}
+          options={{
+            drawerItemStyle: { display: "none" },
+          }}
+        />
+      </Drawer.Navigator>
+    </SafeAreaProvider>
   );
 }

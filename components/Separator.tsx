@@ -14,12 +14,12 @@ export default function Separator(props: Props) {
     // TODO: Fix this: w-[40%]
     return (
       <View className="flex-row items-center gap-4">
-        <View className="h-[1px] w-[40%] bg-gray-300" />
+        <View className="h-[1px] flex-1 bg-gray-300" />
         <Text>{content}</Text>
-        <View className="h-[1px] w-[40%] bg-gray-300" />
+        <View className="h-[1px] flex-1 bg-gray-300" />
       </View>
     );
   }
 
-  return <View className="h-[1px] w-full bg-gray-300" />;
+  return <View className="h-[1px] flex-1 bg-gray-300" />;
 }

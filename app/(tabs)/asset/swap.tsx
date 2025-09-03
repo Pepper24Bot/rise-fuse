@@ -55,6 +55,29 @@ export default function Swap() {
       : [],
   });
 
+  const { sellTokenAvailable, buyTokenAvailable } = useMemo(() => {
+    if (!balances || balances.length === 0)
+      return {
+        sellTokenAvailable: 0n,
+        buyTokenAvailable: 0n,
+      };
+    const sellTokenAvailable =
+      (balances[0]?.result ?? 0n) + (balances[2]?.result?.[0] ?? 0n);
+    const buyTokenAvailable =
+      (balances[1]?.result ?? 0n) + (balances[3]?.result?.[0] ?? 0n);
+
+    return {
+      sellTokenAvailable:
+        sellTokenAvailable === 0n
+          ? 1000n * 10n ** BigInt(sellToken.decimals)
+          : sellTokenAvailable,
+      buyTokenAvailable:
+        buyTokenAvailable === 0n
+          ? 1000n * 10n ** BigInt(buyToken.decimals)
+          : buyTokenAvailable,
+    };
+  }, [balances, sellToken, buyToken]);
+
   const availableSellTokens = useMemo(
     () =>
       TradingBooks.map((book) =>
@@ -105,19 +128,20 @@ export default function Swap() {
     query: { enabled: tradingBook !== undefined },
   });
 
-  useEffect(() => {
-    console.log("tradingBookData", tradingBookData);
-  }, [tradingBookData]);
-
   const [sellAmountRaw, setSellAmountRaw] = useState("0");
   const [buyAmountRaw, setBuyAmountRaw] = useState("0");
 
-  const { placeMarketOrder, error } = usePlaceMarketOrder();
+  const { placeMarketOrder, error, data } = usePlaceMarketOrder();
 
   useEffect(() => {
     if (!error) return;
     console.error("error placing market order", error);
   }, [error]);
+
+  useEffect(() => {
+    if (!data) return;
+    console.log("data", data);
+  }, [data]);
 
   const handleSwap = useCallback(() => {
     if (!tradingBook) {
@@ -172,6 +196,11 @@ export default function Swap() {
     const sellAmount = parseUnits(newSellAmountRaw || "0", sellToken.decimals);
     const price = tradingBookData.lastPrice; // in quote
 
+    if (price === 0n) {
+      setBuyAmountRaw("0");
+      return;
+    }
+
     if (tradingBook.book.base.symbol === sellToken.symbol) {
       // Selling base token, calculate buy amount
       const buyAmount = sellAmount * price;
@@ -218,13 +247,7 @@ export default function Swap() {
       <SwapField
         amount={sellAmountRaw}
         availableTokens={availableSellTokens}
-        balance={
-          balances?.[0]?.result === undefined
-            ? 0n
-            : balances[0].result === 0n
-              ? 1000n * 10n ** BigInt(sellToken.decimals)
-              : balances[0].result
-        }
+        balance={sellTokenAvailable}
         label="From"
         setAmount={handleSellAmountChange}
         setToken={setSellToken}
@@ -233,13 +256,7 @@ export default function Swap() {
       <SwapField
         amount={buyAmountRaw}
         availableTokens={availableBuyTokens}
-        balance={
-          balances?.[1]?.result === undefined
-            ? 0n
-            : balances[1].result === 0n
-              ? 1000n * 10n ** BigInt(buyToken.decimals)
-              : balances[1].result
-        }
+        balance={buyTokenAvailable}
         label="To"
         setAmount={handleBuyAmountChange}
         setToken={setBuyToken}

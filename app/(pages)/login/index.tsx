@@ -1,7 +1,7 @@
 import { Link, useRouter } from "expo-router";
 import { Hooks } from "porto/wagmi";
 import { useEffect } from "react";
-import { Image, Pressable, Text, View } from "react-native";
+import { Image, Pressable, Text, TouchableOpacity, View } from "react-native";
 import { useAccount, useConnectors } from "wagmi";
 import Separator from "@/components/Separator";
 
@@ -66,7 +66,7 @@ export default function Login() {
         <Separator content="OR via Passkey" />
         <View className="items-center w-full py-8 gap-2">
           {/* TODO: Clean this design up */}
-          <Pressable
+          <TouchableOpacity
             className="bg-gray-200 p-3 rounded-lg  w-full items-center"
             onPress={async () => {
               await mutateAsync({ connector: connectors[0] });
@@ -74,15 +74,15 @@ export default function Login() {
             }}
           >
             <Text>Register</Text>
-          </Pressable>
-          <Pressable
+          </TouchableOpacity>
+          <TouchableOpacity
             className="bg-gray-200 p-3 rounded-lg  w-full items-center"
             onPress={() => {
               connect({ connector: connectors[0], createAccount: false });
             }}
           >
             <Text>Login</Text>
-          </Pressable>
+          </TouchableOpacity>
         </View>
       </View>
       <View className="flex-row gap-4 justify-end items-end flex-1 py-4">

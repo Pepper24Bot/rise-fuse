@@ -1,7 +1,7 @@
 import { asyncStorage } from "@/utilities/storage";
 import { Link, useRouter } from "expo-router";
 import { useEffect } from "react";
-import { Image, Pressable, Text, View } from "react-native";
+import { Image, Text, TouchableOpacity, View } from "react-native";
 
 export default function GettingStarted() {
   const router = useRouter();
@@ -47,9 +47,12 @@ export default function GettingStarted() {
 
       <View className="flex-1 gap-4 pt-4 justify-end">
         <Link href="/login" asChild>
-          <Pressable className="bg-white p-4 rounded-lg" onPress={onGetStarted}>
+          <TouchableOpacity
+            className="bg-white p-4 rounded-lg"
+            onPress={onGetStarted}
+          >
             <Text className="text-center">Get Started</Text>
-          </Pressable>
+          </TouchableOpacity>
         </Link>
         <View className="flex-row gap-4 justify-center">
           <Link href="/" target="_blank" asChild className="underline">
