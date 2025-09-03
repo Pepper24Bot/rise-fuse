@@ -1,25 +1,29 @@
-import Separator from "@/components/Separator";
 import { Link, useRouter } from "expo-router";
 import { Hooks } from "porto/wagmi";
 import { useEffect } from "react";
 import { Image, Pressable, Text, View } from "react-native";
 import { useAccount, useConnectors } from "wagmi";
+import Separator from "@/components/Separator";
 
 export default function Login() {
   const router = useRouter();
 
   const { mutate: connect, error: connectError } = Hooks.useConnect();
-  const { mutate: disconnect } = Hooks.useDisconnect();
-  const { address, isConnected, status } = useAccount();
+  const { mutateAsync } = Hooks.useDisconnect();
+  const { isConnected } = useAccount();
   const connectors = useConnectors();
 
   useEffect(() => {
-    // fix this
     if (isConnected) {
       router.navigate("/");
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isConnected]);
+  }, [isConnected, router]);
+
+  useEffect(() => {
+    if (connectError) {
+      console.error(connectError);
+    }
+  }, [connectError]);
 
   return (
     <View className="flex-1 flex-col items-center justify-center p-12">
@@ -64,7 +68,8 @@ export default function Login() {
           {/* TODO: Clean this design up */}
           <Pressable
             className="bg-gray-200 p-3 rounded-lg  w-full items-center"
-            onPress={() => {
+            onPress={async () => {
+              await mutateAsync({ connector: connectors[0] });
               connect({ connector: connectors[0], createAccount: true });
             }}
           >

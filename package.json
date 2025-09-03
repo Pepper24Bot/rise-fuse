@@ -1,6 +1,6 @@
 {
   "name": "rise-fuse",
-  "main": "expo-router/entry",
+  "main": "./index",
   "version": "1.0.0",
   "scripts": {
     "start": "expo start",
@@ -50,9 +50,10 @@
     "react-native-gesture-handler": "~2.24.0",
     "react-native-get-random-values": "^1.11.0",
     "react-native-modal": "^14.0.0-rc.1",
+    "react-native-nitro-modules": "^0.29.2",
     "react-native-pager-view": "6.7.1",
     "react-native-passkeys": "^0.3.3",
-    "react-native-quick-crypto": "^0.7.17",
+    "react-native-quick-crypto": "^1.0.0-beta.20",
     "react-native-reanimated": "~3.17.4",
     "react-native-safe-area-context": "5.4.0",
     "react-native-screens": "~4.11.1",
@@ -82,10 +83,12 @@
     "@tailwindcss/oxide",
     "bufferutil",
     "keccak",
+    "react-native-nitro-modules",
     "unrs-resolver",
     "utf-8-validate"
   ],
   "patchedDependencies": {
-    "ox@0.8.9": "patches/ox@0.8.9.patch"
+    "ox@0.8.9": "patches/ox@0.8.9.patch",
+    "porto@0.0.80": "patches/porto@0.0.80.patch"
   }
 }

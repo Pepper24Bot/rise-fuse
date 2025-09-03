@@ -1,10 +1,9 @@
 import "@/styles/global.css";
-import "@/utilities/polyfills";
 
-import { wagmiConfig } from "@/config/wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import { WagmiProvider } from "wagmi";
+import { wagmiConfig } from "@/config/wagmi";
 
 const client = new QueryClient();
 

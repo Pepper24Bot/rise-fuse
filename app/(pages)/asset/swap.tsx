@@ -1,45 +1,249 @@
-import { SUPPORTED_TOKENS } from "@/constants/Tokens";
-import { SupportedToken } from "@/types/faucet";
-import { useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Pressable, Text, View } from "react-native";
+import { formatUnits, parseUnits } from "viem";
+import {
+  useAccount,
+  useChainId,
+  useReadContract,
+  useReadContracts,
+} from "wagmi";
+import { type ClobToken, ClobTokens, TradingBooks } from "@/constants/Clob";
+import { UnifiedCLOB } from "@/contracts/clob";
+import { MintableERC20 } from "@/contracts/mintableErc20";
+import { usePlaceMarketOrder } from "@/hooks/useClob";
 import SwapField from "../_components/Swap/SwapField";
 
 export default function Swap() {
-  const [fromData, setFromData] = useState<{
-    value: string;
-    token: Partial<SupportedToken>;
-  }>({
-    value: "",
-    token: SUPPORTED_TOKENS[0],
+  const [sellToken, setSellToken] = useState<ClobToken>(ClobTokens.WETH);
+  const [buyToken, setBuyToken] = useState<ClobToken>(ClobTokens.USDC);
+  const { address } = useAccount();
+  const chainId = useChainId();
+  const { data: balances } = useReadContracts({
+    contracts: address
+      ? [
+          {
+            abi: MintableERC20.abi,
+            address: sellToken.contractAddress,
+            functionName: "balanceOf",
+            args: [address],
+          },
+          {
+            abi: MintableERC20.abi,
+            address: buyToken.contractAddress,
+            functionName: "balanceOf",
+            args: [address],
+          },
+          {
+            abi: UnifiedCLOB.abi,
+            address:
+              UnifiedCLOB.addresses[
+                chainId as keyof typeof UnifiedCLOB.addresses
+              ],
+            functionName: "getBalance",
+            args: [address, sellToken.contractAddress],
+          },
+          {
+            abi: UnifiedCLOB.abi,
+            address:
+              UnifiedCLOB.addresses[
+                chainId as keyof typeof UnifiedCLOB.addresses
+              ],
+            functionName: "getBalance",
+            args: [address, buyToken.contractAddress],
+          },
+        ]
+      : [],
   });
 
-  const [toData, setToData] = useState<{
-    value: string;
-    token: Partial<SupportedToken>;
-  }>({
-    value: "",
-    token: SUPPORTED_TOKENS[0],
+  const availableSellTokens = useMemo(
+    () =>
+      TradingBooks.map((book) =>
+        book.quote.symbol === buyToken.symbol
+          ? book.base
+          : book.base.symbol === buyToken.symbol
+            ? book.quote
+            : null,
+      )
+        .filter((token): token is ClobToken => token !== null)
+        .filter((token, index, array) => array.indexOf(token) === index), // remove duplicates
+    [buyToken],
+  );
+  const availableBuyTokens = useMemo(
+    () =>
+      TradingBooks.map((book) =>
+        book.base.symbol === sellToken.symbol
+          ? book.quote
+          : book.quote.symbol === sellToken.symbol
+            ? book.base
+            : null,
+      )
+        .filter((token): token is ClobToken => token !== null)
+        .filter((token, index, array) => array.indexOf(token) === index), // remove duplicates
+    [sellToken],
+  );
+  const tradingBook = useMemo(() => {
+    for (const book of TradingBooks) {
+      const isSell =
+        book.base.symbol === sellToken.symbol &&
+        book.quote.symbol === buyToken.symbol;
+      const isBuy =
+        book.base.symbol === buyToken.symbol &&
+        book.quote.symbol === sellToken.symbol;
+      if (isSell || isBuy)
+        return {
+          side: isSell ? "sell" : "buy",
+          book,
+        } as const;
+    }
+  }, [sellToken, buyToken]);
+  const { data: tradingBookData } = useReadContract({
+    abi: UnifiedCLOB.abi,
+    address:
+      UnifiedCLOB.addresses[chainId as keyof typeof UnifiedCLOB.addresses],
+    functionName: "getTradingBook",
+    args: tradingBook ? [tradingBook?.book.id] : undefined,
+    query: { enabled: tradingBook !== undefined },
   });
 
-  const handleSwap = () => {
-    console.log("fromData:: ", fromData);
-    console.log("toData:: ", toData);
+  useEffect(() => {
+    console.log("tradingBookData", tradingBookData);
+  }, [tradingBookData]);
+
+  const [sellAmountRaw, setSellAmountRaw] = useState("0");
+  const [buyAmountRaw, setBuyAmountRaw] = useState("0");
+
+  const { placeMarketOrder, error } = usePlaceMarketOrder();
+
+  useEffect(() => {
+    if (!error) return;
+    console.error("error placing market order", error);
+  }, [error]);
+
+  const handleSwap = useCallback(() => {
+    if (!tradingBook) {
+      console.warn("No trading book found for this pair");
+      return;
+    }
+
+    if (!balances || balances.length < 2) {
+      return;
+    }
+
+    const amount =
+      tradingBook.book.base.symbol === sellToken.symbol
+        ? parseUnits(sellAmountRaw, sellToken.decimals)
+        : parseUnits(buyAmountRaw, buyToken.decimals);
+
+    const balance =
+      tradingBook.book.base.symbol === sellToken.symbol
+        ? (balances[0]?.result ?? 0n)
+        : (balances[1]?.result ?? 0n);
+
+    const deposit =
+      tradingBook.book.base.symbol === sellToken.symbol
+        ? (balances[2]?.result?.[0] ?? 0n)
+        : (balances[3]?.result?.[0] ?? 0n);
+
+    placeMarketOrder({
+      amount,
+      balance,
+      baseToken: tradingBook.book.base,
+      quoteToken: tradingBook.book.quote,
+      side: tradingBook.side,
+      deposit,
+    });
+  }, [
+    sellToken,
+    buyToken,
+    balances,
+    buyAmountRaw,
+    sellAmountRaw,
+    tradingBook,
+    placeMarketOrder,
+  ]);
+
+  const handleSellAmountChange = (newSellAmountRaw: string) => {
+    setSellAmountRaw(newSellAmountRaw);
+
+    if (!tradingBookData || !tradingBook) {
+      return;
+    }
+
+    const sellAmount = parseUnits(newSellAmountRaw || "0", sellToken.decimals);
+    const price = tradingBookData.lastPrice; // in quote
+
+    if (tradingBook.book.base.symbol === sellToken.symbol) {
+      // Selling base token, calculate buy amount
+      const buyAmount = sellAmount * price;
+      setBuyAmountRaw(
+        formatUnits(buyAmount, buyToken.decimals + sellToken.decimals),
+      );
+    } else {
+      // Selling quote token, calculate buy amount
+      const buyAmount = (sellAmount * 10n ** BigInt(buyToken.decimals)) / price;
+      setBuyAmountRaw(
+        formatUnits(buyAmount, buyToken.decimals + sellToken.decimals),
+      );
+    }
+  };
+
+  const handleBuyAmountChange = (newBuyAmountRaw: string) => {
+    setBuyAmountRaw(newBuyAmountRaw);
+
+    if (!tradingBookData || !tradingBook) {
+      return;
+    }
+
+    const buyAmount = parseUnits(newBuyAmountRaw || "0", buyToken.decimals);
+    const price = tradingBookData.lastPrice; // in quote
+
+    if (tradingBook.book.base.symbol === buyToken.symbol) {
+      // Buying base token, calculate sell amount
+      const sellAmount = buyAmount * price;
+      setSellAmountRaw(
+        formatUnits(sellAmount, sellToken.decimals + buyToken.decimals),
+      );
+    } else {
+      // Buying quote token, calculate sell amount
+      const sellAmount =
+        (buyAmount * 10n ** BigInt(sellToken.decimals)) / price;
+      setSellAmountRaw(
+        formatUnits(sellAmount, sellToken.decimals + buyToken.decimals),
+      );
+    }
   };
 
   return (
     <View className="flex-1 gap-10 p-8 ">
       <SwapField
-        setData={setFromData}
-        data={fromData}
+        amount={sellAmountRaw}
+        availableTokens={availableSellTokens}
+        balance={
+          balances?.[0]?.result === undefined
+            ? 0n
+            : balances[0].result === 0n
+              ? 1000n * 10n ** BigInt(sellToken.decimals)
+              : balances[0].result
+        }
         label="From"
-        // TODO: Create Enum for Supported Tokens
-        defaultToken={SUPPORTED_TOKENS[0]} // ETH
+        setAmount={handleSellAmountChange}
+        setToken={setSellToken}
+        token={sellToken}
       />
       <SwapField
-        setData={setToData}
-        data={toData}
+        amount={buyAmountRaw}
+        availableTokens={availableBuyTokens}
+        balance={
+          balances?.[1]?.result === undefined
+            ? 0n
+            : balances[1].result === 0n
+              ? 1000n * 10n ** BigInt(buyToken.decimals)
+              : balances[1].result
+        }
         label="To"
-        defaultToken={SUPPORTED_TOKENS[4]} // USDC
+        setAmount={handleBuyAmountChange}
+        setToken={setBuyToken}
+        token={buyToken}
       />
       <Pressable
         className="bg-gray-200 p-4 rounded-lg items-center"
