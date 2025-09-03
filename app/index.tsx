@@ -1,63 +1,50 @@
-import "@/styles/global.css";
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import { useRouter } from "expo-router";
 
-import { Hooks } from "porto/wagmi";
-import { useEffect } from "react";
-import { Button, Text, View } from "react-native";
-import { useAccount, useConnectors } from "wagmi";
+import { useEffect, useState } from "react";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { useAccount } from "wagmi";
 
-export default function Index() {
-  const { mutate: connect, error: connectError } = Hooks.useConnect();
-  const { mutate: disconnect } = Hooks.useDisconnect();
-  const { address, isConnected, status } = useAccount();
-  const connectors = useConnectors();
+import TabNavigator from "./(tabs)/_components/TabNavigator";
+import DrawerContent from "./_component/DrawerContent";
 
+const Drawer = createDrawerNavigator();
+
+export default function Main() {
+  const { isConnected } = useAccount();
+  const [isMounted, setIsMounted] = useState(false);
+
+  const router = useRouter();
+
+  // TODO: Implement routing with authentication
   useEffect(() => {
-    if (connectError) console.error(connectError);
-  }, [connectError]);
+    // fix this
+    setIsMounted(true);
+    if (!isConnected && isMounted) {
+      router.navigate("/gettingStarted");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isConnected, isMounted, router]);
 
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        padding: 20,
-      }}
-    >
-      <View style={{ marginBottom: 30 }}>
-        <Text
-          style={{ fontSize: 18, fontWeight: "bold", marginBottom: 10 }}
-          className="text-[#6e0f0ffa]"
-        >
-          Wallet Status
-        </Text>
-        <Text>Status: {status}</Text>
-        <Text>Connected: {isConnected ? "Yes" : "No"}</Text>
-        {address && <Text>Address: {address}</Text>}
-      </View>
-
-      <View style={{ gap: 10 }}>
-        <Button
-          title="Login"
-          onPress={() => {
-            connect({ connector: connectors[0], createAccount: false });
+    <SafeAreaProvider>
+      <Drawer.Navigator
+        screenOptions={{
+          headerShown: false,
+          drawerType: "back",
+          drawerStyle: { width: "100%" },
+        }}
+        drawerContent={DrawerContent}
+        backBehavior="history"
+      >
+        <Drawer.Screen
+          name="MainTabs"
+          component={TabNavigator}
+          options={{
+            drawerItemStyle: { display: "none" },
           }}
         />
-        <Button
-          title="Register"
-          onPress={() => {
-            connect({ connector: connectors[0], createAccount: true });
-          }}
-        />
-        {isConnected && (
-          <Button
-            title="Disconnect"
-            onPress={() => {
-              disconnect({ connector: connectors[0] });
-            }}
-          />
-        )}
-      </View>
-    </View>
+      </Drawer.Navigator>
+    </SafeAreaProvider>
   );
 }
