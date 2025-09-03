@@ -9,8 +9,6 @@ export default function Header(props: Readonly<BottomTabHeaderProps>) {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
 
-  console.log("props:: ", props);
-
   return (
     <View
       className="flex-row bg-gray-100 items-center justify-center p-4"

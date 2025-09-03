@@ -26,6 +26,8 @@ export default function Main() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isConnected, isMounted]);
 
+  // console.log("");
+
   return (
     <SafeAreaProvider>
       <Drawer.Navigator

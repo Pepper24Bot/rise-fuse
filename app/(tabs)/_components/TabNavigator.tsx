@@ -8,10 +8,15 @@ import Header from "./Tabs/Header";
 import TabBar from "./Tabs/TabBar";
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { useColorScheme } from "react-native";
 
 const Tab = createBottomTabNavigator();
 
 export default function TabNavigator() {
+  const colorScheme = useColorScheme(); // "light" | "dark"
+
+  console.log("colorScheme-tab:: ", colorScheme);
+
   return (
     <Tab.Navigator
       screenOptions={{
