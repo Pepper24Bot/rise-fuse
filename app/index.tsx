@@ -24,7 +24,7 @@ export default function Main() {
       router.navigate("/gettingStarted");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isConnected, isMounted]);
+  }, [isConnected, isMounted, router]);
 
   // console.log("");
 

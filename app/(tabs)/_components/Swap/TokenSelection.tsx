@@ -1,19 +1,18 @@
-import { SUPPORTED_TOKENS } from "@/constants/Tokens";
-import { SupportedToken } from "@/types/faucet";
 import { ChevronDown } from "lucide-react-native";
 import { Pressable, Text, View } from "react-native";
-
 import Modal from "react-native-modal";
+import type { ClobToken } from "@/constants/Clob";
 
 type TokenProps = {
-  token: Partial<SupportedToken>;
+  token: ClobToken;
   open: boolean;
   setOpen: (value: boolean) => void;
-  selectToken: (token: Partial<SupportedToken>) => void;
+  selectToken: (token: ClobToken) => void;
+  availableTokens: ClobToken[];
 };
 
-export default function TokenSelection(props: Readonly<TokenProps>) {
-  const { token, open, setOpen, selectToken } = props;
+export function TokenSelection(props: Readonly<TokenProps>) {
+  const { token, open, setOpen, selectToken, availableTokens } = props;
 
   return (
     <View className="">
@@ -30,10 +29,8 @@ export default function TokenSelection(props: Readonly<TokenProps>) {
         backdropColor=""
         className="justify-end ml-0 mb-0 h-full w-full absolute bottom-0 left-0 max-h-80"
       >
-        <View className="bg-white p-4 flex-1 gap-2">
-          {SUPPORTED_TOKENS.filter((token) => {
-            return token.isSupported;
-          }).map((token) => {
+        <View className="bg-white p-4 h-full w-full gap-2">
+          {availableTokens.map((token) => {
             return (
               <View key={token.name} className="p-3 bg-gray-200 rounded-md">
                 <Pressable

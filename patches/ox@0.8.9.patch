@@ -1,5 +1,5 @@
 diff --git a/_cjs/core/internal/webauthn.js b/_cjs/core/internal/webauthn.js
-index 242460ecbcc876b35a1f63b579755999d8bde51e..e1e47ef96265954a8e7669c8c597f893027acf4e 100644
+index 242460ecbcc876b35a1f63b579755999d8bde51e..4f750837135e0f973c2ebd80db5ca6bee6543368 100644
 --- a/_cjs/core/internal/webauthn.js
 +++ b/_cjs/core/internal/webauthn.js
 @@ -32,7 +32,7 @@ async function parseCredentialPublicKey(response) {
@@ -7,7 +7,7 @@ index 242460ecbcc876b35a1f63b579755999d8bde51e..e1e47ef96265954a8e7669c8c597f893
      }
      catch (error) {
 -        if (error.message !== 'Permission denied to access object')
-+        if (error.message !== 'Permission denied to access object' && !error.message.includes("spki"))
++      if (error.message !== 'Permission denied to access object' && !error.message.includes("spki") && !error.message.includes('undefined'))
              throw error;
          const data = new Uint8Array(response.attestationObject);
          const coordinateLength = 0x20;
