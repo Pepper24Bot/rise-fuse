@@ -44,7 +44,8 @@
           }
         }
       ],
-      "react-native-quick-crypto"
+      "react-native-quick-crypto",
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true

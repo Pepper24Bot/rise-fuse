@@ -1,7 +1,14 @@
+import type { Permissions } from "porto/viem/Key";
 import { useCallback, useMemo, useState } from "react";
-import { encodeFunctionData, type Hex, maxUint256 } from "viem";
+import {
+  encodeFunctionData,
+  getAbiItem,
+  type Hex,
+  maxUint256,
+  toFunctionSelector,
+} from "viem";
 import { useAccount, usePublicClient, useSendCalls } from "wagmi";
-import { type ClobToken, TradingBooks } from "@/constants/Clob";
+import { type ClobToken, ClobTokens, TradingBooks } from "@/constants/Clob";
 import { UnifiedCLOB } from "@/contracts/clob";
 import { MintableERC20 } from "@/contracts/mintableErc20";
 
@@ -82,7 +89,7 @@ export function usePlaceMarketOrder() {
             functionName: "mint",
             args: [
               account.address,
-              1000n * 10n ** BigInt(tokenToTransfer.decimals),
+              100n * 10n ** BigInt(tokenToTransfer.decimals),
             ],
           }),
         });
@@ -148,6 +155,63 @@ export function usePlaceMarketOrder() {
     status,
     data,
   };
+}
+
+export function useClobPermissions(
+  chainId: keyof typeof UnifiedCLOB.addresses,
+) {
+  const permissions = useMemo(() => {
+    const calls = [
+      ...Object.values(ClobTokens).flatMap((token) => [
+        {
+          to: token.contractAddress,
+          signature: toFunctionSelector(
+            getAbiItem({
+              abi: MintableERC20.abi,
+              name: "approve",
+            }),
+          ),
+        },
+        {
+          to: token.contractAddress,
+          signature: toFunctionSelector(
+            getAbiItem({
+              abi: MintableERC20.abi,
+              name: "mint",
+            }),
+          ),
+        },
+      ]),
+      {
+        to: UnifiedCLOB.addresses[chainId],
+        signature: toFunctionSelector(
+          getAbiItem({
+            abi: UnifiedCLOB.abi,
+            name: "deposit",
+          }),
+        ),
+      },
+      {
+        to: UnifiedCLOB.addresses[chainId],
+        signature: toFunctionSelector(
+          getAbiItem({
+            abi: UnifiedCLOB.abi,
+            name: "placeMarketOrder",
+          }),
+        ),
+      },
+    ];
+    return {
+      calls,
+      spend: Object.values(ClobTokens).map((token) => ({
+        limit: 10n * 10n ** BigInt(token.decimals),
+        period: "day",
+        token: token.contractAddress,
+      })),
+    } satisfies Permissions;
+  }, [chainId]);
+
+  return permissions;
 }
 
 export class TradingBookNotFoundError extends Error {

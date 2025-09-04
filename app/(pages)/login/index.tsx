@@ -1,10 +1,12 @@
-import Separator from "@/components/Separator";
-import Text from "@/components/ui/Text";
 import { Link, useRouter } from "expo-router";
 import { Hooks } from "porto/wagmi";
 import { useEffect } from "react";
 import { Image, Pressable, TouchableOpacity, View } from "react-native";
-import { useAccount, useConnectors } from "wagmi";
+import { useAccount, useChainId, useConnectors } from "wagmi";
+import Separator from "@/components/Separator";
+import Text from "@/components/ui/Text";
+import type { UnifiedCLOB } from "@/contracts/clob";
+import { useClobPermissions } from "@/hooks/useClob";
 
 export default function Login() {
   const router = useRouter();
@@ -13,6 +15,10 @@ export default function Login() {
   const { mutateAsync } = Hooks.useDisconnect();
   const { isConnected } = useAccount();
   const connectors = useConnectors();
+  const chainId = useChainId();
+  const permissions = useClobPermissions(
+    chainId as keyof typeof UnifiedCLOB.addresses,
+  );
 
   useEffect(() => {
     if (isConnected) {
@@ -79,7 +85,14 @@ export default function Login() {
           <TouchableOpacity
             className="bg-gray-200 p-3 rounded-lg  w-full items-center"
             onPress={() => {
-              connect({ connector: connectors[0], createAccount: false });
+              connect({
+                connector: connectors[0],
+                createAccount: false,
+                grantPermissions: {
+                  expiry: Date.now() + 1000 * 60 * 60 * 24 * 30,
+                  permissions,
+                },
+              });
             }}
           >
             <Text>Login</Text>

@@ -1,25 +1,28 @@
-import Text from "@/components/ui/Text";
-
-import { type ClobToken, ClobTokens, TradingBooks } from "@/constants/Clob";
-import { UnifiedCLOB } from "@/contracts/clob";
-import { MintableERC20 } from "@/contracts/mintableErc20";
-import { usePlaceMarketOrder } from "@/hooks/useClob";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Pressable, View } from "react-native";
 import { formatUnits, parseUnits } from "viem";
 import {
   useAccount,
   useChainId,
+  useChains,
   useReadContract,
   useReadContracts,
 } from "wagmi";
+import Text from "@/components/ui/Text";
+import { type ClobToken, ClobTokens, TradingBooks } from "@/constants/Clob";
+import { UnifiedCLOB } from "@/contracts/clob";
+import { MintableERC20 } from "@/contracts/mintableErc20";
+import { usePlaceMarketOrder } from "@/hooks/useClob";
 import SwapField from "../_components/Swap/SwapField";
+import { openBrowserAsync } from "expo-web-browser";
+import { riseTestnet } from "viem/chains";
 
 export default function Swap() {
   const [sellToken, setSellToken] = useState<ClobToken>(ClobTokens.WETH);
   const [buyToken, setBuyToken] = useState<ClobToken>(ClobTokens.USDC);
   const { address } = useAccount();
   const chainId = useChainId();
+  const chains = useChains();
   const { data: balances } = useReadContracts({
     contracts: address
       ? [
@@ -71,11 +74,11 @@ export default function Swap() {
     return {
       sellTokenAvailable:
         sellTokenAvailable === 0n
-          ? 1000n * 10n ** BigInt(sellToken.decimals)
+          ? 10n * 10n ** BigInt(sellToken.decimals)
           : sellTokenAvailable,
       buyTokenAvailable:
         buyTokenAvailable === 0n
-          ? 1000n * 10n ** BigInt(buyToken.decimals)
+          ? 10n * 10n ** BigInt(buyToken.decimals)
           : buyTokenAvailable,
     };
   }, [balances, sellToken, buyToken]);
@@ -275,6 +278,26 @@ export default function Swap() {
       >
         <Text>Swap</Text>
       </Pressable>
+      {data && (
+        <>
+          <Text>Success!</Text>
+          <Pressable
+            className="bg-gray-200 p-1 rounded-lg items-center"
+            onPress={() => {
+              const chain =
+                chains.find((chain) => chain.id === chainId) ?? chains[0];
+              const url =
+                (chain.blockExplorers?.default.url ??
+                  riseTestnet.blockExplorers.default.url) +
+                "tx/" +
+                data.id;
+              openBrowserAsync(url);
+            }}
+          >
+            <Text>See Transaction Details</Text>
+          </Pressable>
+        </>
+      )}
     </View>
   );
 }
