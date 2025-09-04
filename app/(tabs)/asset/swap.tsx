@@ -87,11 +87,11 @@ export default function Swap() {
           ? book.base
           : book.base.symbol === buyToken.symbol
             ? book.quote
-            : null
+            : null,
       )
         .filter((token): token is ClobToken => token !== null)
         .filter((token, index, array) => array.indexOf(token) === index), // remove duplicates
-    [buyToken]
+    [buyToken],
   );
   const availableBuyTokens = useMemo(
     () =>
@@ -100,11 +100,11 @@ export default function Swap() {
           ? book.quote
           : book.quote.symbol === sellToken.symbol
             ? book.base
-            : null
+            : null,
       )
         .filter((token): token is ClobToken => token !== null)
         .filter((token, index, array) => array.indexOf(token) === index), // remove duplicates
-    [sellToken]
+    [sellToken],
   );
   const tradingBook = useMemo(() => {
     for (const book of TradingBooks) {
@@ -151,7 +151,7 @@ export default function Swap() {
       return;
     }
 
-    if (!balances || balances.length < 2) {
+    if (!balances || balances.length !== 4) {
       return;
     }
 
@@ -162,13 +162,13 @@ export default function Swap() {
 
     const balance =
       tradingBook.book.base.symbol === sellToken.symbol
-        ? (balances[0]?.result ?? 0n)
-        : (balances[1]?.result ?? 0n);
+        ? (balances[0].result ?? 0n)
+        : (balances[1].result ?? 0n);
 
     const deposit =
       tradingBook.book.base.symbol === sellToken.symbol
-        ? (balances[2]?.result?.[0] ?? 0n)
-        : (balances[3]?.result?.[0] ?? 0n);
+        ? (balances[2].result?.[0] ?? 0n)
+        : (balances[3].result?.[0] ?? 0n);
 
     placeMarketOrder({
       amount,
@@ -207,13 +207,13 @@ export default function Swap() {
       // Selling base token, calculate buy amount
       const buyAmount = sellAmount * price;
       setBuyAmountRaw(
-        formatUnits(buyAmount, buyToken.decimals + sellToken.decimals)
+        formatUnits(buyAmount, buyToken.decimals + sellToken.decimals),
       );
     } else {
       // Selling quote token, calculate buy amount
       const buyAmount = (sellAmount * 10n ** BigInt(buyToken.decimals)) / price;
       setBuyAmountRaw(
-        formatUnits(buyAmount, buyToken.decimals + sellToken.decimals)
+        formatUnits(buyAmount, buyToken.decimals + sellToken.decimals),
       );
     }
   };
@@ -228,18 +228,23 @@ export default function Swap() {
     const buyAmount = parseUnits(newBuyAmountRaw || "0", buyToken.decimals);
     const price = tradingBookData.lastPrice; // in quote
 
+    if (price === 0n) {
+      setSellAmountRaw("0");
+      return;
+    }
+
     if (tradingBook.book.base.symbol === buyToken.symbol) {
       // Buying base token, calculate sell amount
       const sellAmount = buyAmount * price;
       setSellAmountRaw(
-        formatUnits(sellAmount, sellToken.decimals + buyToken.decimals)
+        formatUnits(sellAmount, sellToken.decimals + buyToken.decimals),
       );
     } else {
       // Buying quote token, calculate sell amount
       const sellAmount =
         (buyAmount * 10n ** BigInt(sellToken.decimals)) / price;
       setSellAmountRaw(
-        formatUnits(sellAmount, sellToken.decimals + buyToken.decimals)
+        formatUnits(sellAmount, sellToken.decimals + buyToken.decimals),
       );
     }
   };

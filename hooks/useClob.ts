@@ -56,7 +56,8 @@ export function usePlaceMarketOrder() {
 
       const calls: { to: Hex; data?: Hex; value?: bigint }[] = [];
 
-      if (!client || account.status !== "connected") return;
+      if (!client || account.status !== "connected")
+        return setError(new NotConnectedError());
 
       const clobAddress =
         UnifiedCLOB.addresses[
@@ -170,6 +171,15 @@ export class InsufficientBalance extends Error {
   }
 }
 
+export class NotConnectedError extends Error {
+  constructor(message?: string) {
+    super(message || "Not connected");
+    this.name = "NotConnectedError";
+  }
+}
+
 export type PlaceMarketOrderError =
   | TradingBookNotFoundError
-  | UnsupportedChainError;
+  | UnsupportedChainError
+  | InsufficientBalance
+  | NotConnectedError;
