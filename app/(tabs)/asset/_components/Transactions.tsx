@@ -1,45 +1,40 @@
+import { Button, Icon } from "@/components/ui";
 import { useRouter } from "expo-router";
-import {
-  ArrowLeftRight,
-  Minus,
-  MoveDownLeft,
-  MoveUpRight,
-  Plus,
-} from "lucide-react-native";
-import { Text, TouchableOpacity, View } from "react-native";
+import { View } from "react-native";
 
 export default function Transactions() {
   const router = useRouter();
 
-  // TODO: check why flex-1 does not occupy the space equally among children elements
   return (
     <View className="flex-row gap-2 items-center justify-center p-3 mt-8">
-      {/* add disabled ui handling */}
-      <TouchableOpacity className="min-w-20 px-3 py-2 bg-gray-100 rounded-lg items-center">
-        <Plus />
-        <Text>Buy</Text>
-      </TouchableOpacity>
-      <TouchableOpacity className="min-w-20 px-3 py-2 bg-gray-100 rounded-lg items-center">
-        <Minus />
-        <Text>Sell</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
+      <Button
+        title="Buy"
+        icon={<Icon name="Plus" />}
+        className="min-w-20 px-3 py-2"
+      />
+      <Button
+        title="Sell"
+        icon={<Icon name="Minus" />}
+        className="min-w-20 px-3 py-2"
+      />
+      <Button
+        title="Swap"
+        icon={<Icon name="ArrowLeftRight" />}
+        className="min-w-20 px-3 py-2"
         onPress={() => {
           router.navigate("/asset/swap");
         }}
-        className="min-w-20 px-3 py-2 bg-gray-100 rounded-lg items-center"
-      >
-        <ArrowLeftRight />
-        <Text>Swap</Text>
-      </TouchableOpacity>
-      <TouchableOpacity className="min-w-20 px-3 py-2 bg-gray-100 rounded-lg items-center">
-        <MoveUpRight />
-        <Text>Send</Text>
-      </TouchableOpacity>
-      <TouchableOpacity className="min-w-20 px-3 py-2 bg-gray-100 rounded-lg items-center">
-        <MoveDownLeft />
-        <Text>Receive</Text>
-      </TouchableOpacity>
+      />
+      <Button
+        title="Send"
+        icon={<Icon name="MoveUpRight" />}
+        className="min-w-20 px-3 py-2"
+      />
+      <Button
+        title="Receive"
+        icon={<Icon name="MoveDownLeft" />}
+        className="min-w-20 px-3 py-2"
+      />
     </View>
   );
 }

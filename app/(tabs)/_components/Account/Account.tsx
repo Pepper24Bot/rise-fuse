@@ -1,7 +1,9 @@
+import { Text } from "@/components/ui";
+
 import { getMaskedAddress } from "@/utilities/global";
 import { Copy, ExternalLink, Eye } from "lucide-react-native";
 import { useMemo } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import { formatEther } from "viem";
 import { useAccount, useBalance } from "wagmi";
 

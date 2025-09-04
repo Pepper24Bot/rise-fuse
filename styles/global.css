@@ -1,3 +1,67 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@import "../styles/base/index.css";
+
+/* Note: CSS Tokens here are based on Design Guide */
+/* Avoid hard coding colors so it's easier to change themes (light|dark), and palette */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-primary: #7967e5;
+    --color-secondary: #1e1f21;
+
+    /* Background */
+    --color-background: #000;
+    --color-background-secondary: #1e1f21;
+
+    /* Foreground */
+    --color-foreground: #edeeef;
+    --color-foreground-secondary: #b2b4b9;
+
+    /* Text */
+    --color-text-primary: #edeeef;
+    --color-text-secondary: #b2b4b9;
+    --color-text-accent: #7967e5;
+
+    /* Button */
+    --color-button: #121214;
+    --color-button-primary: #7967e5;
+    --color-button-secondary: #1e1f21;
+    --color-button-accent: #7967e5;
+    --color-button-outline: #edeeef;
+
+    /* Border and Separator */
+    --color-border: #2a2b2e;
+  }
+}
+
+/* Light mode */
+:root {
+  --color-primary: #6d5ad5;
+  --color-secondary: #f8f9fb;
+
+  /* Background */
+  --color-background: #fcfcfd;
+  --color-background-secondary: #dfe1e6;
+
+  /* Foreground */
+  --color-foreground: #1e2024;
+  --color-foreground-secondary: #61646b;
+
+  /* Text */
+  --color-text-primary: #1e2024;
+  --color-text-secondary: #61646b;
+  --color-text-accent: #6d5ad5;
+
+  /* Button backgrounds */
+  --color-button: #eff0f3;
+  --color-button-primary: #6d5ad5;
+  --color-button-secondary: #f8f9fb;
+  --color-button-accent: #6d5ad5;
+  --color-button-outline: #1e2024;
+
+  /* Border and Separator */
+  --color-border: #e1e3e8;
+}

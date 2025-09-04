@@ -1,7 +1,9 @@
-import { ChevronDown } from "lucide-react-native";
-import { Pressable, Text, View } from "react-native";
-import Modal from "react-native-modal";
+import { Text } from "@/components/ui";
+
 import type { ClobToken } from "@/constants/Clob";
+import { ChevronDown } from "lucide-react-native";
+import { Pressable, View } from "react-native";
+import Modal from "react-native-modal";
 
 type TokenProps = {
   token: ClobToken;
@@ -11,7 +13,7 @@ type TokenProps = {
   availableTokens: ClobToken[];
 };
 
-export function TokenSelection(props: Readonly<TokenProps>) {
+export default function TokenSelection(props: Readonly<TokenProps>) {
   const { token, open, setOpen, selectToken, availableTokens } = props;
 
   return (

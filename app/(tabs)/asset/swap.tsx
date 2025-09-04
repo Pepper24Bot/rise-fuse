@@ -1,5 +1,11 @@
+import { Text } from "@/components/ui";
+
+import { type ClobToken, ClobTokens, TradingBooks } from "@/constants/Clob";
+import { UnifiedCLOB } from "@/contracts/clob";
+import { MintableERC20 } from "@/contracts/mintableErc20";
+import { usePlaceMarketOrder } from "@/hooks/useClob";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, View } from "react-native";
 import { formatUnits, parseUnits } from "viem";
 import {
   useAccount,
@@ -7,10 +13,6 @@ import {
   useReadContract,
   useReadContracts,
 } from "wagmi";
-import { type ClobToken, ClobTokens, TradingBooks } from "@/constants/Clob";
-import { UnifiedCLOB } from "@/contracts/clob";
-import { MintableERC20 } from "@/contracts/mintableErc20";
-import { usePlaceMarketOrder } from "@/hooks/useClob";
 import SwapField from "../_components/Swap/SwapField";
 
 export default function Swap() {
@@ -149,7 +151,7 @@ export default function Swap() {
       return;
     }
 
-    if (!balances || balances.length < 2) {
+    if (!balances || balances.length !== 4) {
       return;
     }
 
@@ -160,13 +162,13 @@ export default function Swap() {
 
     const balance =
       tradingBook.book.base.symbol === sellToken.symbol
-        ? (balances[0]?.result ?? 0n)
-        : (balances[1]?.result ?? 0n);
+        ? (balances[0].result ?? 0n)
+        : (balances[1].result ?? 0n);
 
     const deposit =
       tradingBook.book.base.symbol === sellToken.symbol
-        ? (balances[2]?.result?.[0] ?? 0n)
-        : (balances[3]?.result?.[0] ?? 0n);
+        ? (balances[2].result?.[0] ?? 0n)
+        : (balances[3].result?.[0] ?? 0n);
 
     placeMarketOrder({
       amount,
@@ -225,6 +227,11 @@ export default function Swap() {
 
     const buyAmount = parseUnits(newBuyAmountRaw || "0", buyToken.decimals);
     const price = tradingBookData.lastPrice; // in quote
+
+    if (price === 0n) {
+      setSellAmountRaw("0");
+      return;
+    }
 
     if (tradingBook.book.base.symbol === buyToken.symbol) {
       // Buying base token, calculate sell amount
