@@ -1,6 +1,5 @@
 import Separator from "@/components/Separator";
-import Text from "@/components/ui/Text";
-
+import { Text } from "@/components/ui";
 import { DrawerContentComponentProps } from "@react-navigation/drawer";
 import { ArrowLeft } from "lucide-react-native";
 import { Hooks } from "porto/wagmi";

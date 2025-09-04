@@ -6,7 +6,7 @@ import TokenUSDC from "@/assets/icons/tokens/usdc.svg";
 import TokenUSDT from "@/assets/icons/tokens/usdt.svg";
 import TokenWBTC from "@/assets/icons/tokens/wbtc.svg";
 
-import Text from "@/components/ui/Text";
+import { Text } from "@/components/ui";
 
 import { SUPPORTED_TOKENS } from "@/constants/Tokens";
 import { useMemo } from "react";

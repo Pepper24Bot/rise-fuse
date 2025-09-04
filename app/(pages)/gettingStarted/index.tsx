@@ -1,4 +1,4 @@
-import Text from "@/components/ui/Text";
+import { Text } from "@/components/ui";
 import { asyncStorage } from "@/utilities/storage";
 import { Link, useRouter } from "expo-router";
 import { useEffect } from "react";

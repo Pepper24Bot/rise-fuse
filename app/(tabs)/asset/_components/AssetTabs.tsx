@@ -1,4 +1,4 @@
-import Text from "@/components/ui/Text";
+import { Text } from "@/components/ui";
 import { cn } from "@/utilities/global";
 import { MaterialTopTabBarProps } from "@react-navigation/material-top-tabs";
 import { ChevronDown } from "lucide-react-native";

@@ -1,4 +1,4 @@
-import Text from "@/components/ui/Text";
+import { Text } from "@/components/ui";
 
 import Separator from "@/components/Separator";
 import type { ClobToken } from "@/constants/Clob";
@@ -6,7 +6,7 @@ import { getMaskedAddress } from "@/utilities/global";
 import { useState } from "react";
 import { Button, TextInput, View } from "react-native";
 import { formatUnits } from "viem";
-import { TokenSelection } from "./TokenSelection";
+import TokenSelection from "./TokenSelection";
 
 type FieldProps = {
   token: ClobToken;

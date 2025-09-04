@@ -1,5 +1,5 @@
 import Separator from "@/components/Separator";
-import Text from "@/components/ui/Text";
+import { Text } from "@/components/ui";
 import { Link, useRouter } from "expo-router";
 import { Hooks } from "porto/wagmi";
 import { useEffect } from "react";

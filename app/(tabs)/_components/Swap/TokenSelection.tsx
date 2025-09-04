@@ -1,4 +1,4 @@
-import Text from "@/components/ui/Text";
+import { Text } from "@/components/ui";
 
 import type { ClobToken } from "@/constants/Clob";
 import { ChevronDown } from "lucide-react-native";
@@ -13,7 +13,7 @@ type TokenProps = {
   availableTokens: ClobToken[];
 };
 
-export function TokenSelection(props: Readonly<TokenProps>) {
+export default function TokenSelection(props: Readonly<TokenProps>) {
   const { token, open, setOpen, selectToken, availableTokens } = props;
 
   return (

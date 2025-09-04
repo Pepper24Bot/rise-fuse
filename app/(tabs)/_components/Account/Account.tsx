@@ -1,4 +1,4 @@
-import Text from "@/components/ui/Text";
+import { Text } from "@/components/ui";
 
 import { getMaskedAddress } from "@/utilities/global";
 import { Copy, ExternalLink, Eye } from "lucide-react-native";

@@ -1,4 +1,4 @@
-import Text from "@/components/ui/Text";
+import { Text } from "@/components/ui";
 
 import { type ClobToken, ClobTokens, TradingBooks } from "@/constants/Clob";
 import { UnifiedCLOB } from "@/contracts/clob";
